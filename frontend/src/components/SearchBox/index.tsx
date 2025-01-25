@@ -27,7 +27,7 @@ const SearchBox: React.FC<SearchBoxProps> = ({
       <input
         type='text'
         placeholder={placeholder}
-        className={`border border-gray-300 rounded-md pl-10 pr-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${className}`}
+        className={`lg:border border-gray-300 bg-gray-200  lg:bg-[#F5F5F5] pl-10 pr-4 py-2 md:py-3.5 w-full focus:outline-none focus:ring-2 focus:ring-[#F81539BF] rounded-md ${className}`}
         {...restProps}
       />
     </div>

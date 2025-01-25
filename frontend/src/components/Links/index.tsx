@@ -4,7 +4,7 @@ type LinkProps = React.AnchorHTMLAttributes<HTMLAnchorElement> & {
   className?: string
 }
 
-const Link: React.FC<LinkProps> = ({
+const Links: React.FC<LinkProps> = ({
   href = '#',
   children,
   className = '',
@@ -13,7 +13,7 @@ const Link: React.FC<LinkProps> = ({
   return (
     <a
       href={href}
-      className={`text-blue-500 hover:text-blue-600 underline ${className}`}
+      className={`text-[#3E3232] hover:text-[#FC4308] text-base font-medium transition-colors duration-500 ease-in ${className}`}
       {...restProps}
     >
       {children}
@@ -21,4 +21,4 @@ const Link: React.FC<LinkProps> = ({
   )
 }
 
-export { Link }
+export { Links }
