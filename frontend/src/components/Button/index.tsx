@@ -19,7 +19,7 @@ const Button: React.FC<ButtonProps> = ({
 }) => {
   return (
     <button
-      className={`flex items-center justify-center space-x-2 ${className}`}
+      className={`flex items-center justify-center space-x-2 cursor-pointer ${className}`}
       onClick={onClickHandler} 
       {...restProps}
     >
