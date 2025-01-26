@@ -10,7 +10,7 @@ const ArticleCard2: React.FC<ArticleCardProp2> = ({
 }) => {
 
   return (
-    <Link to={`/article/${articleId}`} className='w-full md:w-[300px] lg:w-[400px] border-b border-[#484848]'>
+    <Link to={`/${articleId}`} className='w-full md:w-[300px] border-b border-[#484848] py-2'>
       <div className='flex justify-between'>
         <p className='text-base font-light text-[#616060]'>Politic</p>
         <p className='font-normal text-xs text-[#3E3232BF] mt-1'>
@@ -21,6 +21,7 @@ const ArticleCard2: React.FC<ArticleCardProp2> = ({
         <h2 className='py-1.5 text-sm font-medium text-[#3E3232]'>
           Opening Day of Boating Season, Seattle WA
         </h2>
+        <p className='mt-4'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nostrum aut reiciendis, assumenda minus commodi quod laborum.</p>
       </div>
     </Link>
   )

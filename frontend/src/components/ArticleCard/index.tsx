@@ -39,7 +39,7 @@ const ArticleCard: React.FC<ArticleCardProp> = ({
   return (
     <div className={`p-2 md:p-4 bg-white shadow-md w-full ${containerStyle}`}>
       <div className={layoutStyle === 'landscape' ? 'h-full' : 'flex-1 mt-2'}>
-        <Link to={`/article/${articleId}`} className='h-full'>
+        <Link to={`/${articleId}`} className='h-full'>
           <div className='w-full h-full bg-cover bg-center'>
             <Img src='assets/card.png' className='w-full h-full' />
           </div>

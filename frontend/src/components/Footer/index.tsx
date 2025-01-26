@@ -1,65 +1,55 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
+import { Img } from '../Img'
 
-const variants = {
-  fill: 'bg-primary text-white',
-  outline: 'border border-primary text-primary bg-transparent',
-  text: 'text-primary bg-transparent',
-} as const;
+interface LinkItem {
+  name: string
+  to: string
+}
 
-const shapes = {
-  rounded: 'rounded-full',
-  square: 'rounded-none',
-  default: 'rounded-md',
-} as const;
+const Footer: React.FC = () => {
+  // Links object
+  const links: LinkItem[] = [
+    { name: 'About', to: '/' },
+    { name: 'Contact', to: '/contact' },
+    { name: 'Licensing', to: '/licensing' },
+    { name: 'Support', to: '/support' },
+  ]
 
-const sizes = {
-  lg: 'h-[48px] px-5 text-[16px]',
-  md: 'h-[40px] px-4 text-[14px]',
-  sm: 'h-[32px] px-3 text-[12px]',
-  xs: 'h-[28px] px-2 text-[10px]',
-} as const;
-type ButtonProps = Omit<
-  React.ButtonHTMLAttributes<HTMLButtonElement>,
-  'onClick'
-> &
-  Partial<{
-    className: string
-    leftIcon: React.ReactNode
-    rightIcon: React.ReactNode
-    onClick: () => void
-    shape: keyof typeof shapes
-    variant: keyof typeof variants | null
-    size: keyof typeof sizes
-    color: string
-  }>;
-const Button: React.FC<React.PropsWithChildren<ButtonProps>> = ({
-  children,
-  className = '',
-  leftIcon,
-  rightIcon,
-  shape = 'default',
-  variant = 'fill',
-  size = 'xs',
-  color = 'gray',
-  ...restProps
-}) => {
   return (
-    <button
-      className={`
-        ${className} 
-        flex flex-row items-center justify-center text-center cursor-pointer 
-        ${shapes[shape]} 
-        ${variants[variant || 'fill']} 
-        ${sizes[size]} 
-        text-${color}
-      `}
-      {...restProps}
-    >
-      {!!leftIcon && leftIcon}
-      {children}
-      {!!rightIcon && rightIcon}
-    </button>
+    <footer className='bg-gray-300 rounded-lg shadow-sm m-4'>
+      <div className='w-full mx-auto p-4 md:py-8'>
+        <div className='sm:flex sm:items-center sm:justify-between'>
+          <Link
+            to='/'
+            className='flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse'
+          >
+            <Img
+              src='assets/logo.svg'
+              alt='News.com Logo'
+            />
+          </Link>
+          <ul className='flex flex-wrap items-center mb-6 text-sm font-medium text-gray-500 sm:mb-0'>
+            {links.map((link, index) => (
+              <li key={index}>
+                <Link to={link.to} className='hover:text-red-600 me-4 md:me-6'>
+                  {link.name}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <hr className='my-6 border border-[#FC4308] sm:mx-auto lg:my-8' />
+        <span className='block text-sm text-gray-500 sm:text-center'>
+          © 2023{' '}
+          <Link to='/' className='hover:text-red-600'>
+            News.com™
+          </Link>
+          . All Rights Reserved.
+        </span>
+      </div>
+    </footer>
   )
 }
 
-export { Button }
+export default Footer

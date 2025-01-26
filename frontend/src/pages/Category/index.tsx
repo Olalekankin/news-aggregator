@@ -1,26 +1,27 @@
 import { Helmet } from 'react-helmet'
+import LoginForm from '../../components/LoginForm'
 import Breadcrumb from '../../components/BreadCrumb'
 import Filter from '../../components/Filter'
-import SearchResult from './SearchResult'
+import CategoryContent from './CategoryContent'
 
-const Search = () => {
-  const breadcrumbLinks = [
-    { label: 'Home', href: '/' },
-    { label: 'search', href: '`' },
-  ]
-  const handleFilterData = (filter: {
-    type: 'date' | 'source'
-    value: string
-  }) => {
-    console.log('Filter applied:', filter)
-    // Implement your filtering logic here
-  }
+const Category = () => {
+   const breadcrumbLinks = [
+     { label: 'Home', href: '/' },
+     { label: 'category', href: '`' },
+   ]
+   const handleFilterData = (filter: {
+     type: 'date' | 'source'
+     value: string
+   }) => {
+     console.log('Filter applied:', filter)
+     // Implement your filtering logic here
+   }
 
   const sources = ['BBC', 'CNN', 'Reuters', 'Al Jazeera', 'The Guardian']
   return (
     <>
       <Helmet>
-        <title>Search - News.com</title>
+        <title>Sign-in - News.com</title>
         <meta name='description' content='Your news home' />
         <meta name='keywords' content='React, SEO, Helmet' />
       </Helmet>
@@ -31,11 +32,11 @@ const Search = () => {
           <Filter filterData={handleFilterData} sources={sources} />
         </div>
         <div className='lg:my-20'>
-          <SearchResult />
+          <CategoryContent/>
         </div>
       </div>
     </>
   )
 }
 
-export default Search
+export default Category

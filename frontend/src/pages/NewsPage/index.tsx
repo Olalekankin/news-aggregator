@@ -1,27 +1,33 @@
 import React from 'react'
-import Header from '../../components/Header'
 import CategoryCap from './CategoryCap'
 import BreakingNewsSection from './BreakingNewsSection'
 import TrendingSection from './TrendingSection'
 import PopularNewsSection from './PopularNewsSection'
+import {Helmet} from 'react-helmet'
 
 const NewsPageIndex: React.FC = () => {
   return (
-    <div className='py-4 lg:py-10 w-full'>
-      <div className='px-4 lg:px-20'>
-        <Header/>
-        <CategoryCap />
+    <>
+      <Helmet>
+        <title>Home - News.com</title>
+        <meta name='description' content='Your news home' />
+        <meta name='keywords' content='React, SEO, Helmet' />
+      </Helmet>
+      <div className='w-full'>
+        <div className=''>
+          <CategoryCap />
+        </div>
+        <div>
+          <BreakingNewsSection />
+        </div>
+        <div className='border-t'>
+          <PopularNewsSection />
+        </div>
+        <div className='mb-8 lg:mb-20'>
+          <TrendingSection />
+        </div>
       </div>
-      <div>
-        <BreakingNewsSection />
-      </div>
-      <div className='border-t'>
-        <PopularNewsSection />
-      </div>
-      <div className=''>
-        <TrendingSection />
-      </div>
-    </div>
+    </>
   )
 }
 

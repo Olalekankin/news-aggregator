@@ -1,8 +1,13 @@
 import React from 'react'
+import RegisterForm from '../components/RegisterForm'
 
-const SignUp = () => {
+const SignUp: React.FC = () => {
   return (
-    <div>SignUp</div>
+    <div className=''>
+      <div>
+        <RegisterForm />
+      </div>
+    </div>
   )
 }
 

@@ -3,7 +3,7 @@ import ArticleCard from "../../components/ArticleCard";
 import NewsSectionTitle from "../../components/NewsSectionTitle";
 export default function BreakingNewsSection() {
  return (
-   <div className='w-full bg-[#F5F5F5] px-4 lg:py-8 py-4'>
+   <div className='w-full bg-[#F5F5F5] px-4 lg:px-20 lg:py-8 py-4'>
       <NewsSectionTitle title='Breaking News' />
       <div className='w-full grid grid-cols-1 lg:grid-cols-2 gap-8  mt-5'>
         <div className='grid grid-cols-1 md:grid-cols-2 gap-4 order-2 md:order-1'>
