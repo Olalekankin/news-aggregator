@@ -1,31 +1,21 @@
 import React from 'react'
-import Header from '../../components/Header'
-import CategoryCap from './CategoryCap'
-import BreakingNewsSection from './BreakingNewsSection'
-import TrendingSection from './TrendingSection'
-import PopularNewsSection from './PopularNewsSection'
-import Footer from '../../components/Footer'
-
+import ProfileCard from './ProfileCard'
+import { Helmet } from 'react-helmet'
 const ProfileIndex: React.FC = () => {
   return (
-    <div className='pt-4 lg:pt-10 w-full'>
-      <div className='px-4 lg:px-20'>
-        <Header />
-        <CategoryCap />
-      </div>
+    <>
+      <Helmet>
+        <title>Profile - News.com</title>
+        <meta name='description' content='Your news home' />
+        <meta name='keywords' content='React, SEO, Helmet' />
+      </Helmet>
       <div>
-        <BreakingNewsSection />
+        <div>
+          <ProfileCard />
+        </div>
       </div>
-      <div className='border-t'>
-        <PopularNewsSection />
-      </div>
-      <div className=''>
-        <TrendingSection />
-      </div>
-      <div>
-        <Footer />
-      </div>
-    </div>
+    </>
+
   )
 }
 

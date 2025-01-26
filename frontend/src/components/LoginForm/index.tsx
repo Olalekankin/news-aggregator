@@ -54,7 +54,7 @@ const LoginForm: React.FC = () => {
             placeholder='Enter your password'
           />
           {errors.password && (
-            <p className='text-red-500 text-sm mt-1'>
+            <p className='text-orange-500 text-sm mt-1'>
               {String(errors.password.message)}
             </p>
           )}

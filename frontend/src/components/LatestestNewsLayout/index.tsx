@@ -1,10 +1,9 @@
-import React from "react";
-import ArticleCard from "../../components/ArticleCard";
-import NewsSectionTitle from "../../components/NewsSectionTitle";
-export default function BreakingNewsSection() {
- return (
-   <div className='w-full bg-[#F5F5F5] px-4 lg:px-20 lg:py-8 py-4'>
-      <NewsSectionTitle title='Breaking News' />
+import ArticleCard from '../ArticleCard'
+import NewsSectionTitle from '../NewsSectionTitle'
+export default function LatestNews() {
+  return (
+    <div className='w-full bg-[#f7f8fa] px-4 lg:py-8 py-4'>
+      <NewsSectionTitle title='Latest News' />
       <div className='w-full grid grid-cols-1 lg:grid-cols-2 gap-8  mt-5'>
         <div className='grid grid-cols-1 md:grid-cols-2 gap-4 order-2 md:order-1'>
           <ArticleCard
@@ -29,6 +28,6 @@ export default function BreakingNewsSection() {
           />
         </div>
       </div>
-   </div>
- )
+    </div>
+  )
 }

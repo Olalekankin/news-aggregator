@@ -13,8 +13,9 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
 
   return ReactDOM.createPortal(
     <div
-      className='fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50'
-      onClick={onClose} // Close modal when clicking the backdrop
+      className='fixed inset-0 z-50 flex items-center justify-center'
+      onClick={onClose}
+      style={{ backgroundColor: 'rgba(0, 0, 0, 0.4)' }}
     >
       <div
         className='bg-white rounded-lg p-6 w-full max-w-md'

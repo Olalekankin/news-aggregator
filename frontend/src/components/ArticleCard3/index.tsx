@@ -8,15 +8,14 @@ type ArticleCardProp3 = {
 
 const ArticleCard3: React.FC<ArticleCardProp3> = ({ articleId }) => {
   return (
-    <Link
-      to={`/${articleId}`}
-      className='w-full grid grid-cols-5 gap-4 grid-rows-[100px] border'
-    >
-      <div className='col-span-2 h-full'>
-       <Img src='assets/card.png' className='w-full h-full'/>
+    <Link to={`/${articleId}`} className='w-full grid grid-cols-5 gap-3 h-32'>
+      {/* Image Column */}
+      <div className='col-span-2'>
+        <Img src='assets/card.png' className='w-full h-full object-cover rounded-md' />
       </div>
-      <div className='col-start-3 col-end-6'>
-        <h2 className=' text-wrap py-1.5 text-sm font-medium text-[#3E3232] border-b'>
+      {/* Text Column */}
+      <div className='col-span-3 flex flex-col justify-between'>
+        <h2 className='text-wrap py-1.5 text-sm font-medium text-[#3E3232] border-b '>
           Opening Day of Boating Season, Seattle WA
         </h2>
         <p className='mt-1.5 text-wrap text-sm'>

@@ -1,8 +1,7 @@
 import React from 'react'
-import CategoryCap from './CategoryCap'
-import BreakingNewsSection from './BreakingNewsSection'
-import TrendingSection from './TrendingSection'
-import PopularNewsSection from './PopularNewsSection'
+import BreakingNewsSection from '../../components/BreakingNewLayout'
+import TrendingSection from '../../components/TrendingNewLayout'
+import PopularNewsSection from '../../components/PopularNewsLayout'
 import {Helmet} from 'react-helmet'
 
 const NewsPageIndex: React.FC = () => {
@@ -14,10 +13,7 @@ const NewsPageIndex: React.FC = () => {
         <meta name='keywords' content='React, SEO, Helmet' />
       </Helmet>
       <div className='w-full'>
-        <div className=''>
-          <CategoryCap />
-        </div>
-        <div>
+        <div className='pt-6'>
           <BreakingNewsSection />
         </div>
         <div className='border-t'>

@@ -1,5 +1,5 @@
-import ArticleCard from '../../components/ArticleCard'
-import NewsSectionTitle from '../../components/NewsSectionTitle'
+import ArticleCard from '../ArticleCard'
+import NewsSectionTitle from '../NewsSectionTitle'
 export default function TrendingSection() {
   return (
     <div className='w-full bg-white lg:py-8 py-4 px-4'>

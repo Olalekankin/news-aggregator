@@ -34,7 +34,7 @@ const Form: React.FC<FormProps> = ({
       })}
       <button
         type='submit'
-        className='w-full bg-[#fc4308] mt-6 text-white py-2 px-4 rounded-md hover:bg-red-600'
+        className='w-full bg-[#fc4308] mt-6 text-white py-2 px-4 rounded-md hover:bg-orange-400'
       >
         {buttonText}
       </button>

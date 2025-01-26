@@ -9,6 +9,7 @@ import NotFound from './pages/NotFound'
 import Profile from './pages/Profile'
 import SignIn from './pages/SignIn'
 import SignUp from './pages/SignUp'
+import Preference from './pages/Preference'
 
 const Routes = () => {
   let element = useRoutes([
@@ -20,7 +21,8 @@ const Routes = () => {
     { path: '/sign-in', element: <SignIn /> }, // sign-in page route 
     { path: '/sign-up', element: <SignUp /> }, // sign-up page route
     { path: '/profile', element: <Profile /> }, // Profile page route
-    { path: '/home', element: <Home />, //
+    { path: '/home', element: <Home /> }, // Profile page route
+    { path: '/preference', element: <Preference />, // Preference setting page
     },
   ])
 
