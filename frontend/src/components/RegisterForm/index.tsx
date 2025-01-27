@@ -13,7 +13,7 @@ const RegisterForm: React.FC = () => {
   // Ensure onSubmit takes the correct data type
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     console.log('Sign-Up Data:', data)
-    // Perform sign-up logic here (e.g., API request)
+
   }
 
   return (
