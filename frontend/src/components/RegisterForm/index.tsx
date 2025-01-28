@@ -1,8 +1,13 @@
-import React from 'react'
+import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useForm, FieldValues, SubmitHandler } from 'react-hook-form'
+import axios from 'axios'
 import Form from '../Form'
 
 const RegisterForm: React.FC = () => {
+  const navigate = useNavigate()
+  const [loading, setLoading] = useState(false)
+
   const {
     register,
     handleSubmit,
@@ -10,10 +15,27 @@ const RegisterForm: React.FC = () => {
     formState: { errors },
   } = useForm<FieldValues>()
 
-  // Ensure onSubmit takes the correct data type
-  const onSubmit: SubmitHandler<FieldValues> = (data) => {
-    console.log('Sign-Up Data:', data)
-    // Perform sign-up logic here (e.g., API request)
+  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
+    try {
+      setLoading(true)
+
+      // Sending sign-up data to the backend using axios
+      const response = await axios.post(
+        'http://127.0.0.1:8000/api/register',
+        data
+      )
+
+      if (response.status === 201) {
+        navigate('/preference')
+      } 
+
+    } catch (error: any) {
+      // Handle error response
+      console.error(
+        'Error during sign-up:',
+        error.response?.data || error.message
+      )
+    }
   }
 
   return (
@@ -22,7 +44,7 @@ const RegisterForm: React.FC = () => {
         Sign Up
       </h2>
       <Form onSubmit={handleSubmit(onSubmit)} buttonText='Register'>
-        {/* Name */}
+        {/* Name Field */}
         <div>
           <label
             htmlFor='name'
@@ -44,7 +66,7 @@ const RegisterForm: React.FC = () => {
           )}
         </div>
 
-        {/* Email */}
+        {/* Email Field */}
         <div>
           <label
             htmlFor='email'
@@ -62,7 +84,7 @@ const RegisterForm: React.FC = () => {
             })}
             type='email'
             id='email'
-            className='w-full p-2 mt-1 border border-gray-400 rounded-md '
+            className='w-full p-2 mt-1 border border-gray-400 rounded-md'
             placeholder='Enter your email'
           />
           {errors.email?.message && (
@@ -72,7 +94,7 @@ const RegisterForm: React.FC = () => {
           )}
         </div>
 
-        {/* Password */}
+        {/* Password Field */}
         <div>
           <label
             htmlFor='password'
@@ -100,22 +122,22 @@ const RegisterForm: React.FC = () => {
           )}
         </div>
 
-        {/* Confirm Password */}
+        {/* Confirm Password Field */}
         <div>
           <label
-            htmlFor='confirmPassword'
+            htmlFor='password_confirmation'
             className='block text-sm font-medium text-gray-700'
           >
             Confirm Password
           </label>
           <input
-            {...register('confirmPassword', {
+            {...register('password_confirmation', {
               required: 'Please confirm your password',
               validate: (value) =>
                 value === watch('password') || 'Passwords do not match',
             })}
             type='password'
-            id='confirmPassword'
+            id='password_confirmation'
             className='w-full p-2 mt-1 border border-gray-400 rounded-md'
             placeholder='Confirm your password'
           />
@@ -126,6 +148,7 @@ const RegisterForm: React.FC = () => {
           )}
         </div>
       </Form>
+      <div>{loading && <span className='loader mt-6'></span>}</div>
     </div>
   )
 }

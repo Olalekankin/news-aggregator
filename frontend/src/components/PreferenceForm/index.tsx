@@ -1,17 +1,40 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Form from '../Form'
+import axios from 'axios'
 
 const PreferenceForm = () => {
-  const categories = [
-    { id: 1, label: 'Electronics' },
-    { id: 2, label: 'Health' },
-    { id: 3, label: 'Lifestyle' },
-    { id: 4, label: 'Gadgets' },
-    { id: 5, label: 'Watches' },
-    { id: 6, label: 'Travel' },
-    { id: 7, label: 'Sports' },
-    { id: 8, label: 'Home Decor' },
-  ]
+ const [categories, setCategories] = useState<string[]>([])
+ const [authors, setAuthors] = useState<string[]>([])
+ const [sources, setSources] = useState<string[]>([])
+
+ const fetchAndFilterArticles = async () => {
+   try {
+     const response = await axios.get('http://127.0.0.1:8000/api/article')
+     const articles = response.data
+
+     // Filter articles by categories, author, and source
+     const categories = Array.from(
+       new Set(articles.map((article: any) => article.category))
+     )
+     const authors = Array.from(
+       new Set(articles.map((article: any) => article.author))
+     )
+     const sources = Array.from(
+       new Set(articles.map((article: any) => article.source))
+     )
+
+     // Save the filtered arrays in state
+     setCategories(categories)
+     setAuthors(authors)
+     setSources(sources)
+   } catch (error) {
+     console.error('Error fetching articles:', error.message)
+   }
+ }
+
+ useEffect(() => {
+   fetchAndFilterArticles()
+ }, [])
 
   const [selectedCategories, setSelectedCategories] = useState<number[]>([])
 

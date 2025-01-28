@@ -14,34 +14,45 @@ use Illuminate\Support\Facades\Validator;
 class UserController extends Controller
 {
     public function register(Request $request): \Illuminate\Http\JsonResponse
-    {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:8|confirmed',
-            'preferred_sources' => 'nullable|array',        // Array of sources
-            'preferred_categories' => 'nullable|array',    // Array of categories
-            'preferred_authors' => 'nullable|array',
-        ]);
+{
+    $validator = Validator::make($request->all(), [
+        'name' => 'required|string|max:255',
+        'email' => 'required|email|unique:users,email',
+        'password' => 'required|string|min:8|confirmed',
+        'preferred_sources' => 'nullable|array',        // Array of sources
+        'preferred_categories' => 'nullable|array',    // Array of categories
+        'preferred_authors' => 'nullable|array',
+    ]);
 
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
-
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
-
-        //save preferences
-        (new SaveUserPreferencesAction())->execute($user, $request->input('preferred_sources'), $request->input('preferred_categories'), $request->input('preferred_authors'));
-
-        return response()->json([
-            'message' => 'User registered successfully',
-            'user' => (new UserResource($user)),
-        ], 201);
+    if ($validator->fails()) {
+        return response()->json(['errors' => $validator->errors()], 422);
     }
+
+    // Create the user
+    $user = User::create([
+        'name' => $request->name,
+        'email' => $request->email,
+        'password' => Hash::make($request->password),
+    ]);
+
+    // Save user preferences
+    (new SaveUserPreferencesAction())->execute(
+        $user,
+        $request->input('preferred_sources'),
+        $request->input('preferred_categories'),
+        $request->input('preferred_authors')
+    );
+
+    // Generate token
+    $token = $user->createToken('auth_token')->plainTextToken;
+
+    return response()->json([
+        'message' => 'User registered successfully',
+        'token' => $token,
+        'user' => new UserResource($user),
+    ], 201);
+    }
+
     public function login(Request $request): \Illuminate\Http\JsonResponse
     {
         $request->validate([
@@ -62,6 +73,7 @@ class UserController extends Controller
             'token' => $token,
             'user' => (new UserResource($user)),
         ]);
+        
     }
 
     public function savePreferences(Request $request): \Illuminate\Http\JsonResponse

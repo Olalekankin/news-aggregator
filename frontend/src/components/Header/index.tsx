@@ -2,15 +2,16 @@ import React, { useState } from 'react'
 import { Img } from '../Img'
 import { MdMenu } from 'react-icons/md'
 import { SearchBox } from '../SearchBox'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { FaChevronDown, FaRegCircleUser } from 'react-icons/fa6'
 import { RiUserAddLine } from 'react-icons/ri'
 import Dropdown from '../Dropdown'
+import { useAuth } from '../../context/AuthContext'
 
 interface Props {
   className: string
-  isAuthenticated: boolean 
-  userName?: string 
+  isAuthenticated: boolean
+  userName?: string
 }
 
 // Navigation links object
@@ -27,6 +28,8 @@ export default function Header({
 }: Props) {
   const [isDropdownOpen, setDropdownOpen] = useState(false)
   const location = useLocation()
+  const navigate = useNavigate() 
+  const { logout } = useAuth() 
 
   const toggleDropdown = () => {
     setDropdownOpen((prev) => !prev)
@@ -34,6 +37,11 @@ export default function Header({
 
   const closeDropdown = () => {
     setDropdownOpen(false)
+  }
+
+  const handleLogout = () => {
+    logout() // Call logout function (clear authentication)
+    navigate('/sign-in') // Redirect to the sign-in page after logout
   }
 
   return (
@@ -132,10 +140,7 @@ export default function Header({
                   </li>
                   <li>
                     <button
-                      onClick={() => {
-                        closeDropdown()
-                        console.log('Logging out...')
-                      }}
+                      onClick={handleLogout} // Logout handler
                       className='block w-full text-left px-2 py-1 text-red-500 hover:bg-gray-100 rounded'
                     >
                       Logout

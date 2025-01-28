@@ -1,10 +1,16 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import BreakingNewsSection from '../../components/BreakingNewLayout'
 import TrendingSection from '../../components/TrendingNewLayout'
 import PopularNewsSection from '../../components/PopularNewsLayout'
 import {Helmet} from 'react-helmet'
+import { useArticles } from '../../context/ArticlesContext'
 
 const NewsPageIndex: React.FC = () => {
+  const { articles, fetchArticles } = useArticles()
+
+  useEffect(() => {
+    fetchArticles()
+  }, [fetchArticles])
   return (
     <>
       <Helmet>
@@ -14,7 +20,7 @@ const NewsPageIndex: React.FC = () => {
       </Helmet>
       <div className='w-full'>
         <div className='pt-6'>
-          <BreakingNewsSection />
+          <BreakingNewsSection articles={articles} />
         </div>
         <div className='border-t'>
           <PopularNewsSection />

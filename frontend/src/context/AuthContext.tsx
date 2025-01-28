@@ -6,7 +6,7 @@ import React, {
   useEffect,
 } from 'react'
 
-// Type definition type for user data
+// Type definition for user data
 interface User {
   id: number
   name: string
@@ -17,6 +17,7 @@ interface User {
 interface AuthContextType {
   isAuthenticated: boolean
   user: User | null
+  setUser: (user: User | null) => void
   login: (userData: User) => void
   logout: () => void
 }
@@ -36,13 +37,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const login = (userData: User) => {
     setIsAuthenticated(true)
     setUser(userData)
-    localStorage.setItem('user', JSON.stringify(userData)) // Saving user data to localStorage
+    localStorage.setItem('user', JSON.stringify(userData)) // Save user data to localStorage
   }
 
   const logout = () => {
     setIsAuthenticated(false)
     setUser(null)
-    localStorage.removeItem('user') // Clearing user data from localStorage
+    localStorage.removeItem('user') // Clear user data from localStorage
   }
 
   // Load user from localStorage on initial render
@@ -55,7 +56,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, [])
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, user, login, logout }}>
+    <AuthContext.Provider
+      value={{ isAuthenticated, user, setUser, login, logout }}
+    >
       {children}
     </AuthContext.Provider>
   )
