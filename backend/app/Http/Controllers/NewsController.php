@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\NewsArticleCollection;
 use App\Http\Resources\NewsArticleResource;
 use App\Models\NewsArticle;
 use Illuminate\Http\Request;
 
 class NewsController extends Controller
 {
-    public function index(Request $request): \Illuminate\Http\JsonResponse
+    public function index(Request $request)
     {
         $articles = NewsArticle::query()
             ->when($request->keyword, function ($query, $keyword) {
@@ -24,14 +25,15 @@ class NewsController extends Controller
             ->when($request->date, function ($query, $date) {
                 $query->whereDate('published_at', $date);
             })
-            ->paginate(10);
+            ->when($request->author, function ($query, $author) {
+                $query->where('author', $author);
+            })
+            ->paginate();
 
-        return response()->json([
-            'articles' => NewsArticleResource::collection($articles),
-        ], 201);
+        return new NewsArticleCollection($articles);
     }
 
-    public function personalisedNews(Request $request): \Illuminate\Http\JsonResponse
+    public function personalisedNews(Request $request)
     {
         $user = $request->user();
         $preferences = $user->preferences;
@@ -45,9 +47,7 @@ class NewsController extends Controller
             })
             ->paginate(10);
 
-        return response()->json([
-            'articles' => NewsArticleResource::collection($articles),
-        ], 201);
+        return new NewsArticleCollection($articles);
     }
 
     public function categories(): \Illuminate\Http\JsonResponse
