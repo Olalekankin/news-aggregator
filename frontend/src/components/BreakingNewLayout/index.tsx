@@ -1,32 +1,45 @@
-import React from 'react'
 import ArticleCard from '../ArticleCard'
 import NewsSectionTitle from '../NewsSectionTitle'
+import { useArticles } from '../../context/ArticlesContext'
+import { truncateText } from '../../utilis/minimizeText'
+
+
 export default function BreakingNewsSection() {
+
+  const { articles } = useArticles()
   return (
     <div className='w-full bg-[#F5F5F5] px-4 lg:py-8 py-4'>
       <NewsSectionTitle title='Breaking News' />
-      <div className='w-full grid grid-cols-1 lg:grid-cols-2 gap-8  mt-5'>
-        <div className='grid grid-cols-1 md:grid-cols-2 gap-4 order-2 md:order-1'>
-          <ArticleCard
-            articleId='123'
-            preferenceData={['Politics']}
-            isAuthenticated={false}
-            layoutStyle='landscape'
-          />
-          <ArticleCard
-            articleId='123'
-            preferenceData={['Politics']}
-            isAuthenticated={false}
-            layoutStyle='landscape'
-          />
+      <div className='w-full space-y-8'>
+        <div className='grid grid-cols-[repeat(auto-fit,_minmax(350px,_1fr))] gap-4'>
+          {articles.slice(20, 22).map((article) => (
+            <ArticleCard
+              key={article.id}
+              id={article.id.toString()}
+              title={article.title}
+              description={truncateText(article.title, 200)}
+              category={article.category}
+              image_url={article.image_url}
+              source={article.source}
+              author={article.author}
+              published_at={article.published_at}
+            />
+          ))}
         </div>
-        <div className='order-1 md:order-2'>
-          <ArticleCard
-            articleId='123'
-            preferenceData={['Politics']}
-            isAuthenticated={false}
-            layoutStyle='landscape'
-          />
+        <div className='grid grid-cols-[repeat(auto-fit,_minmax(300px,_1fr))] gap-4'>
+          {articles.slice(4, 8).map((article) => (
+            <ArticleCard
+              key={article.id}
+              id={article.id.toString()}
+              title={article.title}
+              description={article.description}
+              category={article.category}
+              image_url={article.image_url}
+              source={article.source}
+              author={article.author}
+              published_at={article.published_at}
+            />
+          ))}
         </div>
       </div>
     </div>

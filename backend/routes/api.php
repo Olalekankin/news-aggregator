@@ -13,11 +13,15 @@ Route::post('/login', [UserController::class, 'login']);
 
 //route to display articles
 Route::get('/articles', [NewsController::class, 'index']);
+Route::get('/articles/{id}', [NewsController::class, 'show'])->where('id', '[1-500]+');
+
 
 //Return a list of sources, categories and authors
 Route::get('/news/sources', [NewsController::class, 'sources']);
 Route::get('/news/categories', [NewsController::class, 'categories']);
 Route::get('/news/authors', [NewsController::class, 'authors']);
+Route::get('/news/search', [NewsController::class, 'search']);
+
 
 // user authenticated routes
 Route::middleware(['auth:sanctum'])->group(function () {

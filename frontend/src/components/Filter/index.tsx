@@ -1,105 +1,100 @@
-import React, { useState, useEffect, useRef } from 'react'
-import { BiBriefcase } from 'react-icons/bi'
+import React, { useState, useEffect } from 'react'
+import { useSearchParams } from 'react-router-dom'
 
-// Define the shape of the props
 interface FilterProps {
-  filterData: (filter: { type: 'date' | 'source'; value: string }) => void
-  sources: string[] // List of source options
-  initialDate?: string // Optional initial date
+  updateFilters: (filters: Record<string, string | null>) => void
+  fetchSources: () => Promise<string[]>
+  fetchAuthors: () => Promise<string[]>
 }
 
 const Filter: React.FC<FilterProps> = ({
-  filterData,
-  sources,
-  initialDate,
+  updateFilters,
+  fetchSources,
+  fetchAuthors,
 }) => {
-  const now = new Date().toISOString().split('T')[0] // Format: YYYY-MM-DD
-  const [selectedDate, setSelectedDate] = useState<string>(initialDate || now)
-  const [selectedSource, setSelectedSource] = useState<string | null>(null)
-  const [isSourceMenuOpen, setIsSourceMenuOpen] = useState<boolean>(false)
+  const [searchParams] = useSearchParams()
+  const now = new Date().toISOString().split('T')[0]
 
-  const menuRef = useRef<HTMLDivElement>(null)
+  const [selectedDate, setSelectedDate] = useState<string | null>(
+    searchParams.get('published_at')
+  )
+  const [selectedSource, setSelectedSource] = useState<string | null>(
+    searchParams.get('source')
+  )
+  const [selectedAuthor, setSelectedAuthor] = useState<string | null>(
+    searchParams.get('author')
+  )
 
-  // Close source menu when clicking outside
+  const [sources, setSources] = useState<string[]>([])
+  const [authors, setAuthors] = useState<string[]>([])
+
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setIsSourceMenuOpen(false)
+    const loadFilters = async () => {
+      try {
+        setSources(await fetchSources())
+        setAuthors(await fetchAuthors())
+      } catch (error) {
+        console.error('Error loading filters:', error)
+        setSources([])
+        setAuthors([])
       }
     }
+    loadFilters()
+  }, [fetchSources, fetchAuthors])
 
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-  }, [])
+  const handleFilterChange = (key: string, value: string | null) => {
+    if (key === 'published_at') setSelectedDate(value)
+    if (key === 'source') setSelectedSource(value)
+    if (key === 'author') setSelectedAuthor(value)
 
-  // Handle date change
-  const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const date = event.target.value
-    setSelectedDate(date)
-    filterData({ type: 'date', value: date })
-  }
-
-  // Handle source selection
-  const handleSourceChange = (source: string) => {
-    setSelectedSource(source)
-    setIsSourceMenuOpen(false)
-    filterData({ type: 'source', value: source })
+    updateFilters({ [key]: value }) 
   }
 
   return (
-    <div>
-      {/* Filter Controls */}
-      <div className='flex items-center space-x-2 mt-5 relative'>
-        {/* Date Filter */}
-        <input
-          type='date'
-          value={selectedDate}
-          onChange={handleDateChange}
-          className='p-2 bg-[#FC4308] text-white rounded-md cursor-pointer'
-          style={{
-            colorScheme: 'dark', 
-          }}
-        />
+    <div className='flex items-center space-x-4 mt-5'>
+      {/* Date Filter */}
+      <input
+        type='date'
+        value={selectedDate || ''}
+        onChange={(e) => handleFilterChange('published_at', e.target.value)}
+        className='p-2 border rounded-md outline-0 border-[#FC4308] focus:ring-[#FC4308] bg-white w-24 lg:w-40 max-w-56'
+      />
 
-        {/* Source Filter */}
-        <button
-          onClick={() => setIsSourceMenuOpen(!isSourceMenuOpen)}
-          className='bg-[#FC4308] text-white px-4 py-2.5 flex items-center space-x-2 rounded-md'
-        >
-          <BiBriefcase />
-          <span className='text-sm'>{selectedSource || 'Source'}</span>
-        </button>
-      </div>
+      {/* Source Filter */}
+      <select
+        value={selectedSource || ''}
+        onChange={(e) => handleFilterChange('source', e.target.value)}
+        className='p-2 border border-[#FC4308] outline-0 focus:ring-[#FC4308] rounded-md bg-white w-24 lg:w-40 max-w-56'
+      >
+        <option value=''>Select Source</option>
+        {sources.length > 0 ? (
+          sources.map((source, index) => (
+            <option key={index} value={source}>
+              {source}
+            </option>
+          ))
+        ) : (
+          <option disabled>Loading sources...</option>
+        )}
+      </select>
 
-      {/* Source Menu */}
-      {isSourceMenuOpen && (
-        <div
-          ref={menuRef}
-          className='border border-gray-200 absolute z-30 w-full md:w-1/3 lg:w-[250px] mt-5 rounded-md bg-white shadow p-4 drop-shadow-md h-[400px] overflow-y-scroll'
-        >
-          <h2 className='text-sm md:text-base font-medium text-black'>
-            Select news source
-          </h2>
-          <div className='mt-5 space-y-2'>
-            {sources.map((source, index) => (
-              <button
-                key={index}
-                type='button'
-                onClick={() => handleSourceChange(source)}
-                className={`w-full border border-gray-200 text-left p-2 rounded-md ${
-                  selectedSource === source
-                    ? 'bg-[#FC4308] text-white'
-                    : 'bg-gray-50'
-                }`}
-              >
-                {source}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
+      {/* Author Filter */}
+      <select
+        value={selectedAuthor || ''}
+        onChange={(e) => handleFilterChange('author', e.target.value)}
+        className='p-2 border border-[#FC4308] outline-0 focus:ring-[#FC4308] rounded-md bg-white w-24 lg:w-40 max-w-56'
+      >
+        <option value=''>Select Author</option>
+        {authors.length > 0 ? (
+          authors.map((author, index) => (
+            <option key={index} value={author}>
+              {author}
+            </option>
+          ))
+        ) : (
+          <option disabled>Loading authors...</option>
+        )}
+      </select>
     </div>
   )
 }

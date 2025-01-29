@@ -4,8 +4,10 @@ import { Button } from '../../components/Button'
 import Modal from '../../components/Modal'
 import PreferenceForm from '../../components/PreferenceForm'
 import { IoMdClose } from 'react-icons/io'
+import { useAuth } from '../../context/AuthContext'
 
 const ProfileCard: React.FC = () => {
+  const { user } = useAuth()
 
   const [isModalOpen, setIsModalOpen] = useState(false)
   return (
@@ -16,10 +18,10 @@ const ProfileCard: React.FC = () => {
             <FaCircleUser className='size-20 text-[#FC4308]' />
             <div className='mt-6 text-center'>
               <h3 className='text-lg lg:text-2xl font-semibold'>
-                Olalekan Akinwale
+               {user?.name}
               </h3>
               <p className='text-sm lg:text-base mt-1.5'>
-                olalekankin@gmail.com
+                {user?.email}
               </p>
             </div>
             <div className='flex items-center space-x-6 mt-10'>

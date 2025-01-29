@@ -37,11 +37,16 @@ class UserController extends Controller
         //save preferences
         (new SaveUserPreferencesAction())->execute($user, $request->input('preferred_sources'), $request->input('preferred_categories'), $request->input('preferred_authors'));
 
+         // Generate token for the registered user
+        $token = $user->createToken('auth_token')->plainTextToken;
+
         return response()->json([
             'message' => 'User registered successfully',
-            'user' => (new UserResource($user)),
+            'user' => new UserResource($user),
+            'token' => $token, 
         ], 201);
     }
+    
     public function login(Request $request): \Illuminate\Http\JsonResponse
     {
         $request->validate([

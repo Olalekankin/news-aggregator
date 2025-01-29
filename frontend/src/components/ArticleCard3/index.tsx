@@ -2,29 +2,49 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { Img } from '../Img'
 
-type ArticleCardProp3 = {
-  articleId: string
+type ArticleCardProp = {
+  id: string
+  title: string
+  source: string
+  author: string
+  image_url: string
+  
 }
 
-const ArticleCard3: React.FC<ArticleCardProp3> = ({ articleId }) => {
+const ArticleCard: React.FC<ArticleCardProp> = ({
+  id,
+  title,
+  source,
+  author,
+  image_url,
+
+}) => {
   return (
-    <Link to={`/${articleId}`} className='w-full grid grid-cols-5 gap-3 h-32'>
+    <Link
+      to={`/article/${id}`}
+      className='w-full flex mt-5 border border-gray-300 space-x-3 h-44'
+    >
       {/* Image Column */}
-      <div className='col-span-2'>
-        <Img src='assets/card.png' className='w-full h-full object-cover rounded-md' />
+      <div className='flex-1 h-full'>
+        <Img
+          src={image_url}
+          className='w-full h-full object-cover rounded-md'
+        />
       </div>
       {/* Text Column */}
-      <div className='col-span-3 flex flex-col justify-between'>
-        <h2 className='text-wrap py-1.5 text-sm font-medium text-[#3E3232] border-b '>
-          Opening Day of Boating Season, Seattle WA
-        </h2>
-        <p className='mt-1.5 text-wrap text-sm'>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Nostrum aut
-          reiciendis, assumenda minus commodi quod laborum.
-        </p>
+      <div className='flex-1 flex flex-col space-y-2 h-full'>
+        <div className='flex flex-col space-y-5'>
+          <h2 className='text-wrap py-1.5 text-sm font-medium text-[#3E3232] border-b border-gray-300'>
+            {title}
+          </h2>
+          <div>
+            <p className='text-wrap text-sm font-medium'>{source}</p>
+            <p className='mtext-wrap text-sm'>{author}</p>
+          </div>
+        </div>
       </div>
     </Link>
   )
 }
 
-export default ArticleCard3
+export default ArticleCard

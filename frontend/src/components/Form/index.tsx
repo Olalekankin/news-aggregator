@@ -26,7 +26,7 @@ const Form: React.FC<FormProps> = ({
       className={`space-y-4 ${className}`}
     >
       {React.Children.map(children, (child) => {
-        // Pass `register` and `errors` to each child field if needed
+        // Pass `register` and `errors` 
         if (React.isValidElement(child)) {
           return React.cloneElement(child, { register, errors })
         }
