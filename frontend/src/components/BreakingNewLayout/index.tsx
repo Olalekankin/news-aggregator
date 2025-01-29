@@ -32,7 +32,7 @@ export default function BreakingNewsSection() {
               key={article.id}
               id={article.id.toString()}
               title={article.title}
-              description={article.description}
+              description={truncateText(article.title, 200)}
               category={article.category}
               image_url={article.image_url}
               source={article.source}

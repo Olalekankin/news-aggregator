@@ -1,4 +1,5 @@
 import { useArticles } from '../../context/ArticlesContext'
+import { truncateText } from '../../utilis/minimizeText'
 import ArticleCard from '../ArticleCard'
 import NewsSectionTitle from '../NewsSectionTitle'
 
@@ -14,7 +15,7 @@ export default function TrendingSection() {
               key={article.id}
               id={article.id.toString()}
               title={article.title}
-              description={article.description}
+              description={truncateText(article.title, 200)}
               category={article.category}
               image_url={article.image_url}
               source={article.source}
