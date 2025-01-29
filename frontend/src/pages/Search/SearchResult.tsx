@@ -5,29 +5,36 @@ import NewsSectionTitle from '../../components/NewsSectionTitle'
 import { useArticles } from '../../context/ArticlesContext'
 
 const SearchResult: React.FC = () => {
-  const { articles, searchArticles } = useArticles() // Get search function from context
+  const { searchResults, searchArticles } = useArticles()
   const [searchParams] = useSearchParams()
-  const keyword = searchParams.get('keyword') || '' // Get keyword from URL
+
+  // Extract search parameters
+  const keyword = searchParams.get('keyword') || ''
+  const source = searchParams.get('source') || ''
+  const published_at = searchParams.get('published_at') || ''
+  const author = searchParams.get('author') || ''
 
   useEffect(() => {
-    if (keyword) {
-      searchArticles(keyword) // Fetch search results
+    if (keyword || source || published_at || author) {
+      searchArticles(keyword, { source, published_at, author })
     }
-  }, [keyword, searchArticles]) // Re-run when keyword changes
+  }, [keyword, source, published_at, author, searchArticles]) 
 
   return (
     <section className='px-4 lg:px-0'>
       {/* Section Title */}
-      <NewsSectionTitle title={`Search results for "${keyword}"`} />
+      <div className='mt-4'>
+        <NewsSectionTitle title={`Search results for "${keyword}"`} />
+      </div>
 
       {/* No Results Found */}
-      {articles.length === 0 && (
+      {searchResults.length === 0 && (
         <p className='text-gray-500 text-center mt-4'>No results found.</p>
       )}
 
       {/* Articles Grid */}
       <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4'>
-        {articles.map((article) => (
+        {searchResults.map((article) => (
           <ArticleCard
             key={article.id}
             id={article.id.toString()}

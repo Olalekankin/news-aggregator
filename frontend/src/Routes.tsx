@@ -9,6 +9,7 @@ import SignIn from './pages/SignIn'
 import SignUp from './pages/SignUp'
 import NotFound from './pages/NotFound'
 import Search from './pages/Search'
+import Categories from './pages/Category'
 
 const Routes = () => {
   const { isAuthenticated } = useAuth() 
@@ -20,6 +21,7 @@ const Routes = () => {
     },
     { path: '/article/:id', element: <NewsDetails /> },
     { path: '/search', element: <Search /> },
+    { path: '/category/:category', element: <Categories /> },
     {
       path: '/sign-in',
       element: isAuthenticated ? <Navigate to='/home' /> : <SignIn />,

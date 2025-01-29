@@ -3,9 +3,10 @@ import Form from '../Form'
 import { Article } from '../../context/ArticlesContext'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../../context/AuthContext'
 
 interface PrefProps {
-  articles: Article[] 
+  articles: Article[]
   isAuthenticated: boolean
 }
 
@@ -14,18 +15,25 @@ const PreferenceForm = ({ articles }: PrefProps) => {
     fetchAndFilterArticles()
   }, [articles])
 
-  // Arrays to hold the unique values of categories, authors, and sources
+  const API_URL = import.meta.env.VITE_API_URL 
+  // States for unique values
   const [categories, setCategories] = useState<string[]>([])
   const [authors, setAuthors] = useState<string[]>([])
   const [sources, setSources] = useState<string[]>([])
 
-  // loading state
-
+  // Loading state
   const [loading, setLoading] = useState(false)
-  // Arrays to hold selected preferences
+  // Selected preferences
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
   const [selectedSources, setSelectedSources] = useState<string[]>([])
   const [selectedAuthors, setSelectedAuthors] = useState<string[]>([])
+
+  const navigate = useNavigate()
+
+  // Function to reduce an array to a specified number of elements
+  const limitArraySize = <T,>(array: T[], limit: number): T[] => {
+    return array.slice(0, limit)
+  }
 
   // Fetch and filter articles to get unique categories, authors, and sources
   const fetchAndFilterArticles = () => {
@@ -36,20 +44,18 @@ const PreferenceForm = ({ articles }: PrefProps) => {
     articles.forEach((article) => {
       if (article.category) categorySet.add(article.category)
       if (article.author) {
-        // Extract first 3 words from the author's name
         const authorName = article.author.split(' ').slice(0, 3).join(' ')
         authorSet.add(authorName)
       }
       if (article.source) sourceSet.add(article.source)
     })
 
-    setCategories([...categorySet])
-    setAuthors([...authorSet]) // Ensure the authors are unique
-    setSources([...sourceSet])
+    setCategories(limitArraySize([...categorySet], 6)) 
+    setAuthors(limitArraySize([...authorSet], 6))
+    setSources(limitArraySize([...sourceSet], 6))
   }
-   const navigate = useNavigate()
 
-  // Toggle category selection
+  // Toggle selection functions
   const toggleCategory = (category: string) => {
     setSelectedCategories((prev) =>
       prev.includes(category)
@@ -58,7 +64,6 @@ const PreferenceForm = ({ articles }: PrefProps) => {
     )
   }
 
-  // Toggle source selection
   const toggleSource = (source: string) => {
     setSelectedSources((prev) =>
       prev.includes(source)
@@ -67,7 +72,6 @@ const PreferenceForm = ({ articles }: PrefProps) => {
     )
   }
 
-  // Toggle author selection
   const toggleAuthor = (author: string) => {
     setSelectedAuthors((prev) =>
       prev.includes(author)
@@ -89,22 +93,21 @@ const PreferenceForm = ({ articles }: PrefProps) => {
     setLoading(true)
 
     try {
-      console.log('Submitting preferences with token:', token) // Debugging log
+      console.log('Submitting preferences with token:', token)
       const response = await axios.post(
-        'http://127.0.0.1:8000/api/preferences',
+        `${API_URL}/preferences`,
         requestBody,
         {
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
           },
         }
       )
 
       if (response.status === 200 || response.status === 201) {
         console.log('Preferences saved successfully!')
-        setLoading(false)
-        navigate('/home')
+        navigate('/sign-in')
       } else {
         console.log('Failed to save preferences.')
       }
@@ -114,21 +117,6 @@ const PreferenceForm = ({ articles }: PrefProps) => {
       setLoading(false)
     }
   }
-
-
-  // Function to slice the data into groups of 5
-  const sliceIntoChunks = (array: string[], size: number) => {
-    const chunks: string[][] = []
-    for (let i = 0; i < array.length; i += size) {
-      chunks.push(array.slice(i, i + size))
-    }
-    return chunks
-  }
-
-  // Slice categories, sources, and authors into chunks of 5
-  const categoryChunks = sliceIntoChunks(categories, 5)
-  const sourceChunks = sliceIntoChunks(sources, 5)
-  const authorChunks = sliceIntoChunks(authors, 5) 
 
   return (
     <>
@@ -142,27 +130,20 @@ const PreferenceForm = ({ articles }: PrefProps) => {
           <p className='text-base font-medium'>
             Select your preferred categories
           </p>
-          <div className='mt-4'>
-            {categoryChunks.map((chunk, chunkIndex) => (
-              <div
-                key={chunkIndex}
-                className='w-full flex flex-wrap space-x-3 space-y-3'
+          <div className='mt-4 flex flex-wrap gap-3'>
+            {categories.map((category) => (
+              <button
+                type='button'
+                key={category}
+                onClick={() => toggleCategory(category)}
+                className={`px-4 py-2 rounded-full border text-sm ${
+                  selectedCategories.includes(category)
+                    ? 'bg-[#fc4508df] text-white border-[#FC4308]'
+                    : 'bg-gray-100 text-gray-700 border-gray-300'
+                } transition hover:bg-[#fc4508df] hover:text-white`}
               >
-                {chunk.map((category) => (
-                  <button
-                    type='button'
-                    key={category}
-                    onClick={() => toggleCategory(category)}
-                    className={`px-4 py-2 rounded-full border text-sm ${
-                      selectedCategories.includes(category)
-                        ? 'bg-[#fc4508df] text-white border-[#FC4308]'
-                        : 'bg-gray-100 text-gray-700 border-gray-300'
-                    } transition hover:bg-[#fc4508df] hover:text-white`}
-                  >
-                    {category}
-                  </button>
-                ))}
-              </div>
+                {category}
+              </button>
             ))}
           </div>
         </div>
@@ -170,27 +151,20 @@ const PreferenceForm = ({ articles }: PrefProps) => {
         {/* Sources Section */}
         <div className='mt-10'>
           <p className='text-base font-medium'>Select preferred news sources</p>
-          <div className='mt-4'>
-            {sourceChunks.map((chunk, chunkIndex) => (
-              <div
-                key={chunkIndex}
-                className='flex flex-wrap space-y-3 space-x-3'
+          <div className='mt-4 flex flex-wrap gap-3'>
+            {sources.map((source) => (
+              <button
+                type='button'
+                key={source}
+                onClick={() => toggleSource(source)}
+                className={`px-4 py-2 rounded-full w-max border text-sm ${
+                  selectedSources.includes(source)
+                    ? 'bg-[#fc4508df] text-white border-[#FC4308]'
+                    : 'bg-gray-100 text-gray-700 border-gray-300'
+                } transition hover:bg-[#fc4508df] hover:text-white`}
               >
-                {chunk.map((source) => (
-                  <button
-                    type='button'
-                    key={source}
-                    onClick={() => toggleSource(source)}
-                    className={`px-4 py-2 rounded-full w-max border text-sm ${
-                      selectedSources.includes(source)
-                        ? 'bg-[#fc4508df] text-white border-[#FC4308]'
-                        : 'bg-gray-100 text-gray-700 border-gray-300'
-                    } transition hover:bg-[#fc4508df] hover:text-white`}
-                  >
-                    {source}
-                  </button>
-                ))}
-              </div>
+                {source}
+              </button>
             ))}
           </div>
         </div>
@@ -198,31 +172,25 @@ const PreferenceForm = ({ articles }: PrefProps) => {
         {/* Author Section */}
         <div className='mt-10'>
           <p className='text-base font-medium'>Select your preferred authors</p>
-          <div className='mt-4'>
-            {authorChunks.map((chunk, chunkIndex) => (
-              <div
-                key={chunkIndex}
-                className='flex flex-wrap space-x-3 space-y-3 gap-3'
+          <div className='mt-4 flex flex-wrap gap-3'>
+            {authors.map((author) => (
+              <button
+                type='button'
+                key={author}
+                onClick={() => toggleAuthor(author)}
+                className={`px-4 py-2 rounded-full border w-max text-sm ${
+                  selectedAuthors.includes(author)
+                    ? 'bg-[#fc4508df] text-white border-[#FC4308]'
+                    : 'bg-gray-100 text-gray-700 border-gray-300'
+                } transition hover:bg-[#fc4508df] hover:text-white`}
               >
-                {chunk.map((author) => (
-                  <button
-                    type='button'
-                    key={author}
-                    onClick={() => toggleAuthor(author)}
-                    className={`px-4 py-2 rounded-full border w-max text-sm ${
-                      selectedAuthors.includes(author)
-                        ? 'bg-[#fc4508df] text-white border-[#FC4308]'
-                        : 'bg-gray-100 text-gray-700 border-gray-300'
-                    } transition hover:bg-[#fc4508df] hover:text-white`}
-                  >
-                    {author}
-                  </button>
-                ))}
-              </div>
+                {author}
+              </button>
             ))}
           </div>
         </div>
       </Form>
+
       <div className='flex w-full justify-center'>
         {loading && <span className='loader mt-6'></span>}
       </div>

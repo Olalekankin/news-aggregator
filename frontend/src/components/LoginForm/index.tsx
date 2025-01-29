@@ -12,6 +12,8 @@ const LoginForm: React.FC = () => {
   // Destructure both setUser and login from the context
   const { login, } = useAuth()
 
+  const API_URL = import.meta.env.VITE_API_URL 
+
   const {
     register,
     handleSubmit,
@@ -23,7 +25,7 @@ const LoginForm: React.FC = () => {
       setLoading(true)
 
       // Make the login API request
-      const response = await axios.post('http://127.0.0.1:8000/api/login', data)
+      const response = await axios.post(`${API_URL}/login`, data)
 
       if (response.status === 200 || response.status === 201) {
         // Extract user and token from the response

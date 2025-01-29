@@ -1,6 +1,7 @@
 import NewsSectionTitle from '../NewsSectionTitle'
 import ArticleCard2 from '../ArticleCard2'
 import { useArticles } from '../../context/ArticlesContext'
+import { truncateText } from '../../utilis/minimizeText'
 
 
 export default function PopularNewsSection() {
@@ -15,7 +16,7 @@ export default function PopularNewsSection() {
             key={article.id}
             id={article.id.toString()}
             title={article.title}
-            description={article.description}
+            description={truncateText(article.title, 250)}
             image_url={article.image_url}
             category={article.category}
             published_at={article.published_at}

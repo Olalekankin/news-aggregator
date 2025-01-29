@@ -1,6 +1,7 @@
 import ArticleCard from '../ArticleCard'
 import NewsSectionTitle from '../NewsSectionTitle'
 import { useArticles } from '../../context/ArticlesContext'
+import { truncateText } from '../../utilis/minimizeText'
 
 
 export default function BreakingNewsSection() {
@@ -11,12 +12,12 @@ export default function BreakingNewsSection() {
       <NewsSectionTitle title='Breaking News' />
       <div className='w-full space-y-8'>
         <div className='grid grid-cols-[repeat(auto-fit,_minmax(350px,_1fr))] gap-4'>
-          {articles.slice(0, 2).map((article) => (
+          {articles.slice(20, 22).map((article) => (
             <ArticleCard
               key={article.id}
               id={article.id.toString()}
               title={article.title}
-              description={article.description}
+              description={truncateText(article.title, 200)}
               category={article.category}
               image_url={article.image_url}
               source={article.source}
@@ -40,7 +41,6 @@ export default function BreakingNewsSection() {
             />
           ))}
         </div>
-        
       </div>
     </div>
   )

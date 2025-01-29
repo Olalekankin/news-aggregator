@@ -5,6 +5,7 @@ import Footer from './components/Footer'
 import LatestNews from './components/LatestestNewsLayout'
 import { useEffect } from 'react'
 import { useArticles } from './context/ArticlesContext'
+import ScrollToTop from './utilis/scrollTop'
 
 const App = () => {
   const { fetchArticles } = useArticles()
@@ -16,10 +17,11 @@ const App = () => {
 
   return (
     <Router>
+      <ScrollToTop />
       <div className='flex flex-col min-h-screen'>
         {/* Header  */}
         <header className='py-4 lg:px-20'>
-          <Header/>
+          <Header />
         </header>
 
         {/* Main Content  */}

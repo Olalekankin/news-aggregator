@@ -9,6 +9,7 @@ const RegisterForm: React.FC = () => {
   const navigate = useNavigate()
   const [loading, setLoading] = useState(false)
   const { login } = useAuth() 
+   const API_URL = import.meta.env.VITE_API_URL 
 
   const {
     register,
@@ -23,7 +24,7 @@ const RegisterForm: React.FC = () => {
 
       // Sending sign-up data to the backend using axios
       const response = await axios.post(
-        'http://127.0.0.1:8000/api/register',
+        `${API_URL}/register`,
         data
       )
 

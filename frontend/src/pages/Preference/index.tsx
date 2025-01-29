@@ -20,7 +20,7 @@ const Preference: React.FC = () => {
         <meta name='description' content='Your news home' />
         <meta name='keywords' content='React, SEO, Helmet' />
       </Helmet>
-      <div className=''>
+      <div className='px-4'>
         <div className='flex items-center justify-center lg:space-x-10'>
           <div className='hidden lg:inline h-[300px]'>
             <Img
@@ -33,7 +33,7 @@ const Preference: React.FC = () => {
               <h2 className='text-lg font-semibold text-center lg:text-left'>
                 Welcome
               </h2>
-              <p className='text-center text-sm text-gray-600'>
+              <p className='text-sm text-gray-600 text-center lg:text-left'>
                 To serve you the best of news, kindly select the category of
                 news
               </p>

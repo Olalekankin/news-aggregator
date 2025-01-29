@@ -71,23 +71,38 @@ class NewsController extends Controller
         /**
      * Search articles by keyword.
      */
-    public function search(Request $request): \Illuminate\Http\JsonResponse
-    {
-        // Validate the request
-        $request->validate([
-            'keyword' => 'required|string|min:1|max:255',
-        ]);
+    /**
+ * Search articles by keyword and optionally filter further by source, published_at, and author.
+ */
+public function search(Request $request): \Illuminate\Http\JsonResponse
+{
+    // Validate the request
+    $request->validate([
+        'keyword'      => 'required|string|min:1|max:255',
+        'source'       => 'nullable|string',
+        'published_at' => 'nullable|date',
+        'author'       => 'nullable|string',
+    ]);
 
-        $keyword = $request->keyword;
+    $keyword = $request->keyword;
 
-        // Search for articles by matching keyword in multiple fields
-        $articles = NewsArticle::query()
+    // Search for articles by matching keyword in multiple fields and applying filters
+     $articles = NewsArticle::query()
         ->where(function ($query) use ($keyword) {
             $query->where('title', 'like', "%$keyword%")
                 ->orWhere('description', 'like', "%$keyword%")
                 ->orWhere('category', 'like', "%$keyword%")
                 ->orWhere('source', 'like', "%$keyword%")
                 ->orWhere('author', 'like', "%$keyword%");
+        })
+        ->when($request->source, function ($query, $source) {
+            $query->where('source', $source);
+        })
+        ->when($request->published_at, function ($query, $published_at) {
+            $query->whereDate('published_at', $published_at);
+        })
+        ->when($request->author, function ($query, $author) {
+            $query->where('author', $author);
         })
         ->paginate(30);
 
@@ -118,7 +133,7 @@ class NewsController extends Controller
             ->when($preferences->preferred_categories, function ($query, $categories) {
                 $query->whereIn('category', $categories);
             })
-            ->paginate(15);
+            ->paginate(100);
 
         return new NewsArticleCollection($articles);
     }

@@ -1,34 +1,35 @@
+import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useArticles } from '../../context/ArticlesContext'
 import CategoryTab from '../Category'
 
 export default function PreferredCategory() {
-  type Category = {
-    categoryName: string
-    label: string
-    image: string
+  const { fetchCategories, fetchArticlesByQuery } = useArticles()
+  const [fetchedCategories, setFetchedCategories] = useState<string[]>([])
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    const loadCategories = async () => {
+      const categories = await fetchCategories()
+      setFetchedCategories(categories)
+    }
+    loadCategories()
+  }, [fetchCategories])
+
+  const handleCategoryClick = async (category: string) => {
+    await fetchArticlesByQuery({ category }) // Fetch only articles that match the category
+    console.log('Hey')
+    navigate(`/category/${category}`) // Navigate to category page
   }
-  const categories: Category[] = [
-    { categoryName: 'sport', label: 'Sport', image: 'assets/sport.png' },
-    { categoryName: 'music', label: 'Music', image: 'assets/music.png' },
-    { categoryName: 'tech', label: 'Tech', image: 'assets/tech.png' },
-    { categoryName: 'food', label: 'Food', image: 'assets/food.jpg' },
-    { categoryName: 'animal', label: 'Animal', image: 'assets/animal.png' },
-    { categoryName: 'car', label: 'Car', image: 'assets/car.png' },
-    {
-      categoryName: 'abstract',
-      label: '#Abstract',
-      image: 'assets/abstract.png',
-    },
-    { categoryName: 'health', label: '#Health', image: 'assets/medicine.png' },
-  ]
 
   return (
     <div className='py-2.5 bg-[#fc45087c] hidden lg:flex items-center space-x-6 mt-5 px-4 overflow-x-hidden'>
-      {categories.map((category, index) => (
+      {fetchedCategories.map((category, index) => (
         <CategoryTab
           key={index}
-          categoryName={category.categoryName}
-          label={category.label}
-          image={category.image}
+          label={category}
+          image={`assets/${category.toLowerCase()}.png`} // Dynamic image
+          onClick={() => handleCategoryClick(category)} // Handle click event
         />
       ))}
     </div>

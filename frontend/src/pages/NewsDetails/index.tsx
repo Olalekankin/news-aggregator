@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import axios from 'axios'
 import { useArticles } from '../../context/ArticlesContext'
+import { formatDateString } from '../../utilis/formatDate'
 
 // Define the type for an article
 interface Article {
@@ -39,8 +40,9 @@ const NewsDetails = () => {
   const [article, setArticle] = useState<Article | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
+   const API_URL = import.meta.env.VITE_API_URL 
 
-  const url = `http://127.0.0.1:8000/api/articles/${id}`
+  const url = `${API_URL}/articles/${id}`
 
   // Fetch single article by id
   useEffect(() => {
@@ -61,6 +63,7 @@ const NewsDetails = () => {
   // Fetch all articles once when component mounts
   useEffect(() => {
     fetchArticles()
+    console.log(articles)
   }, [fetchArticles])
 
   return (
@@ -98,19 +101,19 @@ const NewsDetails = () => {
 
                   <div className='mt-32 md:mt-24'>
                     <div className='flex items-center justify-between md:justify-center space-x-4 lg:space-x-10 xl:space-x-16'>
-                      <div className='flex items-center space-x-2'>
+                      <div className='flex flex-col space-y-0.5 lg:space-y-0 lg:flex-row justify-center lg:items-center space-x-2'>
                         <IoCalendarClearOutline />
                         <span className='text-xs md:text-sm'>
-                          {article.published_at}
+                          {formatDateString(article.published_at)}
                         </span>
                       </div>
-                      <div className='flex items-center space-x-2'>
+                      <div className='flex flex-col space-y-0.5 lg:space-y-0 lg:flex-row justify-center lg:items-center space-x-2'>
                         <BsBriefcase />
                         <span className='text-xs md:text-sm'>
                           {article.source}
                         </span>
                       </div>
-                      <div className='flex items-center space-x-2'>
+                      <div className='flex flex-col space-y-0.5 lg:space-y-0 lg:flex-row justify-center lg:items-center space-x-2'>
                         <IoFolderOutline />
                         <div className='flex items-center space-x-0.5'>
                           <span className='text-xs md:text-sm'>Category:</span>
@@ -129,27 +132,20 @@ const NewsDetails = () => {
             </div>
 
             {/* Latest News Section */}
-            <div className='bg-rose-50 py-5 min-h-[550px]'>
+            <div className='bg-rose-50 py-5 min-h-[850px]'>
               <NewsSectionTitle title='Latest news' />
-              <div className='grid mt-2 grid-cols-1 gap-5 px-3'>
+              <div className='mt-5 flex flex-col space-y-6 px-4'>
                 {articles?.length > 0 ? (
                   articles
-                    .slice(80, 84)
+                    .slice(20, 24)
                     .map((article) => (
                       <ArticleCard3
                         key={article.id}
                         id={article.id.toString()}
-                        title={article.title}
-                        description={
-                          article.description
-                            .split(' ')
-                            .slice(0, 20)
-                            .join(' ') +
-                          (article.description.split(' ').length > 20
-                            ? '...'
-                            : '')
-                        }
+                        title={(article.title)}
                         image_url={article.image_url}
+                        source={article.source}
+                        author={article.author}
                       />
                     ))
                 ) : (

@@ -12,6 +12,7 @@ const Home: React.FC = () => {
   useEffect(() => {
     fetchArticles()
   }, [fetchArticles])
+  
 
   return (
     <>
