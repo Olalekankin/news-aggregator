@@ -3,10 +3,12 @@ import { useNavigate } from 'react-router-dom'
 import { useForm, FieldValues, SubmitHandler } from 'react-hook-form'
 import axios from 'axios'
 import Form from '../Form'
+import { useAuth } from '../../context/AuthContext' 
 
 const RegisterForm: React.FC = () => {
   const navigate = useNavigate()
   const [loading, setLoading] = useState(false)
+  const { login } = useAuth() 
 
   const {
     register,
@@ -25,16 +27,26 @@ const RegisterForm: React.FC = () => {
         data
       )
 
-      if (response.status === 201) {
-        navigate('/preference')
-      } 
+      if (response.status === 200 || response.status === 201) {
+        const { user, token } = response.data
 
+        // Use the login function to store user and set authentication status
+        login(user, token)
+
+        // Store the token in localStorage
+        localStorage.setItem('token', token)
+
+        // Redirect to the preference setting page
+        navigate('/preference') 
+      }
     } catch (error: any) {
       // Handle error response
       console.error(
         'Error during sign-up:',
         error.response?.data || error.message
       )
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -148,7 +160,9 @@ const RegisterForm: React.FC = () => {
           )}
         </div>
       </Form>
-      <div>{loading && <span className='loader mt-6'></span>}</div>
+      <div className='w-full justify-center flex justify-center'>
+        {loading && <span className='loader mt-6'></span>}
+      </div>
     </div>
   )
 }

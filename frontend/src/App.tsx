@@ -3,29 +3,35 @@ import { BrowserRouter as Router } from 'react-router-dom'
 import Header from './components/Header'
 import Footer from './components/Footer'
 import LatestNews from './components/LatestestNewsLayout'
-import { useAuth } from './context/AuthContext'
+import { useEffect } from 'react'
+import { useArticles } from './context/ArticlesContext'
 
 const App = () => {
-  const { isAuthenticated, user } = useAuth()
+  const { fetchArticles } = useArticles()
+
+  // Fetch articles when the component mounts
+  useEffect(() => {
+    fetchArticles()
+  }, [fetchArticles])
+
   return (
     <Router>
       <div className='flex flex-col min-h-screen'>
         {/* Header  */}
         <header className='py-4 lg:px-20'>
-          <Header
-            isAuthenticated={isAuthenticated}
-            userName={user?.name || 'User'}
-          />
+          <Header/>
         </header>
 
         {/* Main Content  */}
-        <main className='flex-grow  lg:px-20'>
+        <main className='flex-grow lg:px-20'>
           <Routes />
         </main>
-        {/* Foot news layout */}
+
+        {/* Latest News */}
         <section className='mt-10 lg:mt-16'>
           <LatestNews />
         </section>
+
         {/* Footer  */}
         <footer className='w-full mt-16'>
           <Footer />

@@ -8,7 +8,10 @@ import { useAuth } from '../../context/AuthContext'
 const LoginForm: React.FC = () => {
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
-  const { setUser } = useAuth()
+
+  // Destructure both setUser and login from the context
+  const { login, } = useAuth()
+
   const {
     register,
     handleSubmit,
@@ -19,20 +22,21 @@ const LoginForm: React.FC = () => {
     try {
       setLoading(true)
 
+      // Make the login API request
       const response = await axios.post('http://127.0.0.1:8000/api/login', data)
 
-      if (response.status === 200) {
+      if (response.status === 200 || response.status === 201) {
         // Extract user and token from the response
         const { user, token } = response.data
 
         // Save user data and token to localStorage
-        localStorage.setItem('authToken', token)
+        localStorage.setItem('token', token)
         localStorage.setItem('user', JSON.stringify(user))
 
-        // Update the global context with the user data
-        setUser(user)
-        console.log(user)
+        // Call login from context to update global state
+        login(user, token)
 
+        // Navigate to home after successful login
         navigate('/home')
       }
     } catch (error: any) {
@@ -42,7 +46,7 @@ const LoginForm: React.FC = () => {
         error.response?.data || error.message
       )
     } finally {
-      setLoading(false) 
+      setLoading(false)
     }
   }
 
@@ -52,7 +56,7 @@ const LoginForm: React.FC = () => {
         Sign In
       </h2>
       <Form
-        onSubmit={handleSubmit(onSubmit)}
+        onSubmit={handleSubmit(onSubmit)} // Bind form submission to handleSubmit
         buttonText={loading ? 'Logging in...' : 'Login'}
       >
         <div>
@@ -95,8 +99,10 @@ const LoginForm: React.FC = () => {
             </p>
           )}
         </div>
+        <div className='w-full flex justify-center'>
+          {loading && <span className='loader mt-6'></span>}
+        </div>
       </Form>
-      <div>{loading && <span className='loader mt-6'></span>}</div>
     </div>
   )
 }

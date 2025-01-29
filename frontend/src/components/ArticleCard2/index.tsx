@@ -19,7 +19,7 @@ const ArticleCard2: React.FC<ArticleCardProp2> = ({
 }) => {
   return (
     <Link
-      to={`/${id}`}
+      to={`/article/${id}`}
       className='w-full md:w-[300px] border-b border-[#484848] py-2'
     >
       <div className='flex justify-between'>

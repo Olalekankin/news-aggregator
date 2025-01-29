@@ -36,7 +36,9 @@ return [
     ],
 
     'newsapi' => [
-        'key' => env('NEWSAPI_KEY'),
+        'news_org' => env('NEWSAPI_KEY'),
+        'nytimes' => env('NEWYORK_API_KEY'),
+        'news_ai' => env('NEWS_AI_KEY'),
     ],
 
 ];

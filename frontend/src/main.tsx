@@ -8,9 +8,9 @@ import { ArticlesProvider } from './context/ArticlesContext.tsx'
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ArticlesProvider>
-      <AuthProvider>
-        <App />
-      </AuthProvider>
+        <AuthProvider>
+          <App />
+        </AuthProvider>
     </ArticlesProvider>
   </StrictMode>
 )

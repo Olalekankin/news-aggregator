@@ -2,8 +2,9 @@ import NewsSectionTitle from '../NewsSectionTitle'
 import ArticleCard2 from '../ArticleCard2'
 import { useArticles } from '../../context/ArticlesContext'
 
+
 export default function PopularNewsSection() {
-  const { articles } = useArticles() // Access articles from context
+  const { articles } = useArticles()
 
   return (
     <div className='w-full bg-[#efecec] px-4 lg:py-8 py-4'>
@@ -12,13 +13,12 @@ export default function PopularNewsSection() {
         {articles.slice(0, 4).map((article) => (
           <ArticleCard2
             key={article.id}
-            articleId={article.id.toString()} 
+            id={article.id.toString()}
             title={article.title}
-            description={article.description} 
-            image_url={article.image_url} 
-            category={article.category} 
-            author={article.author}
-            published_at={article.published_at} 
+            description={article.description}
+            image_url={article.image_url}
+            category={article.category}
+            published_at={article.published_at}
           />
         ))}
       </div>

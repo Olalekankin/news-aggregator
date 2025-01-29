@@ -1,13 +1,22 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import PreferenceForm from '../../components/PreferenceForm'
 import { Img } from '../../components/Img'
 import { Helmet } from 'react-helmet'
+import { useArticles } from '../../context/ArticlesContext'
+import { useAuth } from '../../context/AuthContext'
 
 const Preference: React.FC = () => {
+    const { articles, fetchArticles } = useArticles()
+  const { isAuthenticated, user } = useAuth()
+    // Fetch articles when the component mounts
+    useEffect(() => {
+      fetchArticles()
+    }, [fetchArticles])
+
   return (
     <>
       <Helmet>
-        <title>Preference - News.com</title>
+        <title>Preference setting page - News.com</title>
         <meta name='description' content='Your news home' />
         <meta name='keywords' content='React, SEO, Helmet' />
       </Helmet>
@@ -29,7 +38,10 @@ const Preference: React.FC = () => {
                 news
               </p>
             </div>
-            <PreferenceForm />
+            <PreferenceForm
+              articles={articles}
+              isAuthenticated={isAuthenticated}
+            />
           </div>
         </div>
       </div>

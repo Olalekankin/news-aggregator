@@ -46,6 +46,7 @@ class UserController extends Controller
             'token' => $token, 
         ], 201);
     }
+    
     public function login(Request $request): \Illuminate\Http\JsonResponse
     {
         $request->validate([

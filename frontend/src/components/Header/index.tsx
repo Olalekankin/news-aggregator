@@ -1,120 +1,100 @@
-import React, { useState } from 'react'
-import { Img } from '../Img'
-import { MdMenu } from 'react-icons/md'
-import { SearchBox } from '../SearchBox'
+import { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { MdMenu } from 'react-icons/md'
 import { FaChevronDown, FaRegCircleUser } from 'react-icons/fa6'
 import { RiUserAddLine } from 'react-icons/ri'
+import { Img } from '../Img'
+import { SearchBox } from '../SearchBox'
 import Dropdown from '../Dropdown'
 import { useAuth } from '../../context/AuthContext'
 
-interface Props {
-  className: string
-  isAuthenticated: boolean
-  userName?: string
-}
-
-// Navigation links object
+// Navigation links for the header
 const navigationLinks = [
   { text: 'News', to: '/' },
   { text: 'About', to: '/about' },
   { text: 'Contact', to: '/contact' },
 ]
 
-export default function Header({
-  isAuthenticated,
-  userName = 'User',
-  ...props
-}: Props) {
+export default function Header({ className }: { className: string }) {
   const [isDropdownOpen, setDropdownOpen] = useState(false)
   const location = useLocation()
-  const navigate = useNavigate() 
-  const { logout } = useAuth() 
+  const navigate = useNavigate()
+  const { isAuthenticated, logout, user } = useAuth()
 
-  const toggleDropdown = () => {
-    setDropdownOpen((prev) => !prev)
-  }
+  // Toggles user dropdown menu
+  const toggleDropdown = () => setDropdownOpen((prev) => !prev)
 
-  const closeDropdown = () => {
-    setDropdownOpen(false)
-  }
+  // Closes dropdown menu when needed
+  const closeDropdown = () => setDropdownOpen(false)
 
+  // Logs out user and redirects to sign-in page
   const handleLogout = () => {
-    logout() // Call logout function (clear authentication)
-    navigate('/sign-in') // Redirect to the sign-in page after logout
+    logout()
+    navigate('/sign-in')
   }
 
   return (
-    <header {...props} className='w-full py-2 px-4 lg:px-0'>
+    <header className={`w-full py-2 px-4 lg:px-0 ${className}`}>
+      {/* Mobile Logo */}
       <div className='flex w-full justify-center lg:hidden mb-4'>
         <Link to='/'>
-          <Img src='assets/logo.svg' alt='Logo' className='s' />
+          <Img src='assets/logo.svg' alt='Logo' />
         </Link>
       </div>
-      <div className='w-full flex items-center space-x-4 justify-between lg:space-x-16'>
-        <div className='block lg:flex items-center space-x-8'>
-          <div className='hidden lg:inline'>
+
+      {/* Main Navigation */}
+      <div className='w-full flex items-center justify-between lg:space-x-16'>
+        <div className='flex items-center space-x-8'>
+          {/* Desktop Logo */}
+          <div className='hidden lg:block'>
             <Link to='/'>
-              <Img src='assets/logo.svg' alt='Logo' className='s' />
+              <Img src='assets/logo.svg' alt='Logo' />
             </Link>
           </div>
-          <div className='hidden lg:inline'>
-            <ul className='flex items-center space-x-8'>
-              {navigationLinks.map((link, index) => (
-                <li key={index}>
-                  <Link
-                    to={link.to}
-                    className={`${
-                      location.pathname === link.to
-                        ? 'text-red-500 font-bold'
-                        : 'hover:text-red-500'
-                    } transition-colors duration-300`}
-                  >
-                    {link.text}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+
+          {/* Navigation Links */}
+          <ul className='hidden lg:flex items-center space-x-8'>
+            {navigationLinks.map((link) => (
+              <li key={link.to}>
+                <Link
+                  to={link.to}
+                  className={`transition-colors duration-300 ${
+                    location.pathname === link.to
+                      ? 'text-red-500 font-bold'
+                      : 'hover:text-red-500'
+                  }`}
+                >
+                  {link.text}
+                </Link>
+              </li>
+            ))}
+          </ul>
         </div>
+
+        {/* Search Box */}
         <div className='flex-1 lg:w-1/3'>
-          {/* Search box */}
-          <SearchBox iconSrc='assets/search.svg'></SearchBox>
+          <SearchBox />
         </div>
+
+        {/* User Section */}
         <div className='hidden md:flex items-center'>
-          {!isAuthenticated ? (
-            // Login and Register Links
-            <div className='flex items-center space-x-5'>
-              <Link
-                to='/sign-in'
-                className='flex items-center space-x-2 hover:text-red-500 transition-colors duration-500 ease-in'
-              >
-                <FaRegCircleUser />
-                <span className='font-medium'>Login</span>
-              </Link>
-              <Link
-                to='/sign-up'
-                className='flex items-center space-x-2 hover:text-red-500 transition-colors duration-500 ease-in'
-              >
-                <RiUserAddLine />
-                <span className='font-medium'>Register</span>
-              </Link>
-            </div>
-          ) : (
-            // Profile Section
-            <div>
+          {isAuthenticated ? (
+            // **Authenticated User Menu**
+            <div className='relative'>
               <div className='flex items-center space-x-4'>
-                <div className='size-11 rounded-md object-cover'>
+                <div className='size-11 rounded-md'>
                   <Img src='assets/profile.png' alt='Profile' />
                 </div>
                 <button
                   onClick={toggleDropdown}
-                  className='text-gray-900 font-medium flex items-center space-x-4'
+                  className='font-medium flex items-center space-x-2 text-gray-900'
                 >
-                  <span className='font-medium'>{userName}</span>
+                  <span>{user?.name || 'User'}</span>
                   <FaChevronDown />
                 </button>
               </div>
+
+              {/* Dropdown Menu */}
               <Dropdown
                 isOpen={isDropdownOpen}
                 onClose={closeDropdown}
@@ -132,7 +112,7 @@ export default function Header({
                   </li>
                   <li>
                     <Link
-                      to='/setting'
+                      to='/settings'
                       className='block w-full text-left px-2 py-1 hover:bg-gray-100 rounded'
                     >
                       Settings
@@ -140,7 +120,7 @@ export default function Header({
                   </li>
                   <li>
                     <button
-                      onClick={handleLogout} // Logout handler
+                      onClick={handleLogout}
                       className='block w-full text-left px-2 py-1 text-red-500 hover:bg-gray-100 rounded'
                     >
                       Logout
@@ -149,13 +129,31 @@ export default function Header({
                 </ul>
               </Dropdown>
             </div>
+          ) : (
+            // **Guest User: Login & Register Links**
+            <div className='flex items-center space-x-5'>
+              <Link
+                to='/sign-in'
+                className='flex items-center space-x-2 hover:text-red-500 transition-colors duration-500'
+              >
+                <FaRegCircleUser />
+                <span className='font-medium'>Login</span>
+              </Link>
+              <Link
+                to='/sign-up'
+                className='flex items-center space-x-2 hover:text-red-500 transition-colors duration-500'
+              >
+                <RiUserAddLine />
+                <span className='font-medium'>Register</span>
+              </Link>
+            </div>
           )}
         </div>
-        <div className='md:hidden'>
-          <button className='bg-gray-200 p-3.5 rounded'>
-            <MdMenu className='text-[#3E3232] size-5' />
-          </button>
-        </div>
+
+        {/* Mobile Menu Button */}
+        <button className='md:hidden bg-gray-200 p-3.5 rounded'>
+          <MdMenu className='text-[#3E3232] size-5' />
+        </button>
       </div>
     </header>
   )

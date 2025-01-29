@@ -7,12 +7,12 @@ export default function PreferredCategory() {
     image: string
   }
   const categories: Category[] = [
-    { categoryName: 'sport', label: '#Sport', image: 'assets/sport.png' },
-    { categoryName: 'music', label: '#Music', image: 'assets/music.png' },
-    { categoryName: 'tech', label: '#Tech', image: 'assets/tech.png' },
-    { categoryName: 'food', label: '#Food', image: 'assets/food.jpg' },
-    { categoryName: 'animal', label: '#Animal', image: 'assets/animal.png' },
-    { categoryName: 'car', label: '#Car', image: 'assets/car.png' },
+    { categoryName: 'sport', label: 'Sport', image: 'assets/sport.png' },
+    { categoryName: 'music', label: 'Music', image: 'assets/music.png' },
+    { categoryName: 'tech', label: 'Tech', image: 'assets/tech.png' },
+    { categoryName: 'food', label: 'Food', image: 'assets/food.jpg' },
+    { categoryName: 'animal', label: 'Animal', image: 'assets/animal.png' },
+    { categoryName: 'car', label: 'Car', image: 'assets/car.png' },
     {
       categoryName: 'abstract',
       label: '#Abstract',

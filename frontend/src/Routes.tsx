@@ -18,7 +18,7 @@ const Routes = () => {
       path: '/',
       element: isAuthenticated ? <Navigate to='/home' /> : <NewsPage />,
     },
-    { path: '/:articleId', element: <NewsDetails /> },
+    { path: '/article/:id', element: <NewsDetails /> },
     { path: '/search', element: <Search /> },
     {
       path: '/sign-in',

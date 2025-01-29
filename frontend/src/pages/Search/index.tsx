@@ -13,7 +13,6 @@ const Search = () => {
     value: string
   }) => {
     console.log('Filter applied:', filter)
-    // Implement your filtering logic here
   }
 
   const sources = ['BBC', 'CNN', 'Reuters', 'Al Jazeera', 'The Guardian']

@@ -11,6 +11,7 @@ const NewsPageIndex: React.FC = () => {
   useEffect(() => {
     fetchArticles()
   }, [fetchArticles])
+  console.log(articles)
   return (
     <>
       <Helmet>
@@ -20,10 +21,10 @@ const NewsPageIndex: React.FC = () => {
       </Helmet>
       <div className='w-full'>
         <div className='pt-6'>
-          <BreakingNewsSection articles={articles} />
+          <BreakingNewsSection />
         </div>
         <div className='border-t'>
-          <PopularNewsSection />
+          <PopularNewsSection  />
         </div>
         <div className='mb-8 lg:mb-20'>
           <TrendingSection />

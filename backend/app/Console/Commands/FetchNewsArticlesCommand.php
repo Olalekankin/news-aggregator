@@ -48,7 +48,7 @@ class FetchNewsArticlesCommand extends Command
                 );
             }
 
-            //New Your times source
+            //New York times source
 
             $articles = (new NewYorkTimesApiService())->fetchArticles($category);
 
