@@ -7,21 +7,9 @@ import { IoCalendarClearOutline, IoFolderOutline } from 'react-icons/io5'
 import { BsBriefcase } from 'react-icons/bs'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import axios from 'axios'
 import { useArticles } from '../../context/ArticlesContext'
 import { formatDateString } from '../../utilis/formatDate'
-
-// Define the type for an article
-interface Article {
-  id: number
-  title: string
-  description: string
-  category: string
-  image_url: string
-  source: string
-  author: string
-  published_at: string
-}
+import OtherNews from '../../components/OtherNewsSection'
 
 // Define the type for a breadcrumb link
 interface BreadcrumbLink {
@@ -35,30 +23,21 @@ const NewsDetails = () => {
     { label: 'Article', href: '#' },
   ]
 
-  const { articles, fetchArticles } = useArticles()
   const { id } = useParams<{ id: string }>()
-  const [article, setArticle] = useState<Article | null>(null)
+  const { articles, singleArticle, fetchArticleById, fetchArticles } =
+    useArticles()
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
-   const API_URL = import.meta.env.VITE_API_URL 
 
-  const url = `${API_URL}/articles/${id}`
-
-  // Fetch single article by id
+  // Fetch single article by ID using URL parameter
   useEffect(() => {
-    const fetchArticle = async () => {
-      try {
-        setLoading(true)
-        const response = await axios.get(url)
-        setArticle(response.data)
-      } catch (err) {
-        setError('Failed to load the article. Please try again.')
-      } finally {
-        setLoading(false)
-      }
+    if (id) {
+      setLoading(true)
+      fetchArticleById(Number(id))
+        .catch(() => setError('Failed to load the article. Please try again.'))
+        .finally(() => setLoading(false))
     }
-    fetchArticle()
-  }, [id]) // Only runs when `id` changes
+  }, [id, fetchArticleById])
 
   // Fetch all articles once when component mounts
   useEffect(() => {
@@ -85,32 +64,32 @@ const NewsDetails = () => {
                 <p className='text-center text-gray-600'>Loading article...</p>
               ) : error ? (
                 <p className='text-center text-red-500'>{error}</p>
-              ) : article ? (
+              ) : singleArticle ? (
                 <div>
-                  <div className='lg:bg-gray-200 max-h-[250px]'>
+                  <div className='lg:bg-gray-200 max-h-[280px]'>
                     <h2 className='text-lg lg:text-2xl font-medium mb-4 p-3'>
-                      {article.title}
+                      {singleArticle.title}
                     </h2>
                     <div className='w-full lg:w-[calc(100%-6%)] top-16 bg-cover bg-center h-[250px] lg:h-[260px] mx-auto'>
                       <Img
-                        src={article.image_url}
+                        src={singleArticle.image_url}
                         className='w-full h-full object-cover object-center'
                       />
                     </div>
                   </div>
 
-                  <div className='mt-32 md:mt-24'>
+                  <div className='mt-32'>
                     <div className='flex items-center justify-between md:justify-center space-x-4 lg:space-x-10 xl:space-x-16'>
                       <div className='flex flex-col space-y-0.5 lg:space-y-0 lg:flex-row justify-center lg:items-center space-x-2'>
                         <IoCalendarClearOutline />
                         <span className='text-xs md:text-sm'>
-                          {formatDateString(article.published_at)}
+                          {formatDateString(singleArticle.published_at)}
                         </span>
                       </div>
                       <div className='flex flex-col space-y-0.5 lg:space-y-0 lg:flex-row justify-center lg:items-center space-x-2'>
                         <BsBriefcase />
                         <span className='text-xs md:text-sm'>
-                          {article.source}
+                          {singleArticle.source}
                         </span>
                       </div>
                       <div className='flex flex-col space-y-0.5 lg:space-y-0 lg:flex-row justify-center lg:items-center space-x-2'>
@@ -118,12 +97,20 @@ const NewsDetails = () => {
                         <div className='flex items-center space-x-0.5'>
                           <span className='text-xs md:text-sm'>Category:</span>
                           <span className='text-xs md:text-sm'>
-                            {article.category}
+                            {singleArticle.category}
                           </span>
                         </div>
                       </div>
                     </div>
-                    <p className='mt-4'>{article.description}</p>
+                    <div className='mt-4'>
+                      {singleArticle.description
+                        .split('\n\n') // Split into paragraphs
+                        .map((para, index) => (
+                          <p className='mt-3' key={index}>
+                            <p>{para}</p>
+                          </p>
+                        ))}
+                    </div>
                   </div>
                 </div>
               ) : (
@@ -134,26 +121,7 @@ const NewsDetails = () => {
             {/* Latest News Section */}
             <div className='bg-rose-50 py-5 min-h-[850px]'>
               <NewsSectionTitle title='Latest news' />
-              <div className='mt-5 flex flex-col space-y-6 px-4'>
-                {articles?.length > 0 ? (
-                  articles
-                    .slice(20, 24)
-                    .map((article) => (
-                      <ArticleCard3
-                        key={article.id}
-                        id={article.id.toString()}
-                        title={(article.title)}
-                        image_url={article.image_url}
-                        source={article.source}
-                        author={article.author}
-                      />
-                    ))
-                ) : (
-                  <p className='text-center text-gray-600'>
-                    No latest news available.
-                  </p>
-                )}
-              </div>
+              <OtherNews />
             </div>
           </div>
         </div>

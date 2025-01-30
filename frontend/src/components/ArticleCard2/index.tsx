@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 
 type ArticleCardProp2 = {
-  id: string
+  id: number
   title: string
   description: string
   category: string

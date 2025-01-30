@@ -16,12 +16,28 @@ const SearchResult: React.FC = () => {
 
   useEffect(() => {
     if (keyword || source || published_at || author) {
+      // Log the parameters being passed to the search function
+      console.log('Search Parameters:', {
+        keyword,
+        source,
+        published_at,
+        author,
+      })
+
+      // Call the searchArticles function
       searchArticles(keyword, { source, published_at, author })
     }
-  }, [keyword, source, published_at, author, searchArticles]) 
+  }, [keyword, source, published_at, author, searchArticles])
+
+  // Log the search results when they are updated
+  useEffect(() => {
+    if (searchResults) {
+      console.log('Search Results:', searchResults)
+    }
+  }, [searchResults])
 
   return (
-    <section className='px-4 lg:px-0'>
+    <section className='lg:px-0'>
       {/* Section Title */}
       <div className='mt-4'>
         <NewsSectionTitle title={`Search results for "${keyword}"`} />

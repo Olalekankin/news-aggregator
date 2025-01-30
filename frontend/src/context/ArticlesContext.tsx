@@ -26,15 +26,23 @@ export interface Article {
 interface ArticlesContextType {
   articles: Article[] // Stores all articles
   filteredArticles: Article[] // Stores filtered articles by query
+  searchResults: Article[] // Stores search results
+  personalizedArticles: Article[] // Stores personalize articles
+  singleArticle: Article | null // Stores a single article fetched by ID
+  authors: Article | null // Stores a single article fetched by ID
+  sources: Article | null // Stores a single article fetched by ID
+  categories: Article | null // Stores a single article fetched by ID
   token: string | null // Authentication token
-  fetchArticles: () => Promise<void> // Fetch all articles (no query)
+  fetchArticles: () => Promise<void> // Fetch all articles
+  fetchPersonalizedArticle: () => Promise<void> // Fetch all articles
   fetchArticlesByQuery: (
     params: Record<string, string | number | undefined>
   ) => Promise<void> // Fetch filtered articles
-  searchArticles: (query: string) => Promise<void>
-  fetchSources: () => Promise<string[]>
-  fetchAuthors: () => Promise<string[]>
-  fetchCategories: () => Promise<string[]>
+  searchArticles: (query: string) => Promise<void> // Search articles by keyword
+  fetchSources: () => Promise<string[]> // Fetch all sources
+  fetchAuthors: () => Promise<string[]> // Fetch all authors
+  fetchCategories: () => Promise<string[]> // Fetch all categories
+  fetchArticleById: (id: number) => Promise<void> // Fetch a single article by ID
 }
 
 const ArticlesContext = createContext<ArticlesContextType | undefined>(
@@ -45,17 +53,17 @@ export const ArticlesProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [articles, setArticles] = useState<Article[]>([]) // Stores all articles
-  const [filteredArticles, setFilteredArticles] = useState<Article[]>([]) // Stores filtered articles by query
+  const [filteredArticles, setFilteredArticles] = useState<Article[]>([])
   const [searchResults, setSearchResults] = useState<Article[]>([]) 
-
+  const [personalizedArticles, setPersonalizedArticles] = useState<Article[]>([]) 
+  const [singleArticle, setSingleArticle] = useState<Article | null>(null)
   const [sources, setSources] = useState<string[]>([])
   const [authors, setAuthors] = useState<string[]>([])
   const [categories, setCategories] = useState<string[]>([])
-  const [token, setToken] = useState<string | null>(
-    localStorage.getItem('token')
+  const [token, setToken] = useState<string | null>(localStorage.getItem('token')
   )
 
-  const API_URL = import.meta.env.VITE_API_URL 
+  const API_URL = import.meta.env.VITE_API_URL
 
   useEffect(() => {
     const handleStorageChange = () => {
@@ -69,26 +77,45 @@ export const ArticlesProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }, [])
 
-  // Fetch articles dynamically (public or personalized)
+  // Fetch all articles
   const fetchArticles = useCallback(async () => {
-    console.log(token)
     try {
-      const endpoint = token
-        ? `${API_URL}/articles/personalized`
-        : `${API_URL}/articles`
-
-      const headers = token ? { Authorization: `Bearer ${token}` } : {}
-
-      const response = await axios.get(endpoint, { headers })
-      if(endpoint){
-        setArticles(response.data.data.reverse())
-      }
+      const response = await axios.get(`${API_URL}/articles`)
       setArticles(response.data.data)
-      
     } catch (error) {
-      console.error('Error fetching articles:')
+      console.error('Error fetching articles:', error.message)
+    }
+  }, [])
+
+  // Fetch all articles
+  const fetchPersonalizedArticle = useCallback(async () => {
+    try {
+      const response = await axios.get(`${API_URL}/articles/personalized`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      setPersonalizedArticles(response.data.data)
+    } catch (error) {
+      console.error('Error fetching articles:', error.message)
     }
   }, [token])
+
+  // Fetch a single article by ID
+  const fetchArticleById = useCallback(async (id: number) => {
+      if (!id) return 
+
+      try {
+        const url = `${API_URL}/articles/${id}`
+        console.log(`Fetching article from: ${url}`)
+        const response = await axios.get(url)
+        setSingleArticle(response.data)
+        console.log(singleArticle)
+      } catch (error) {
+        console.error(`Error fetching article with id ${id}:`, error.message)
+        setSingleArticle(null) 
+      }
+  }, [])
 
   // Fetch articles by query (filtered)
   const fetchArticlesByQuery = useCallback(
@@ -107,7 +134,7 @@ export const ArticlesProvider: React.FC<{ children: React.ReactNode }> = ({
     []
   )
 
-  // Search for articles by a query 
+  // Search for articles by a query
   const searchArticles = useCallback(
     async (
       keyword: string,
@@ -122,31 +149,25 @@ export const ArticlesProvider: React.FC<{ children: React.ReactNode }> = ({
           params.append('published_at', filters.published_at)
         if (filters.author) params.append('author', filters.author)
 
-        const response = await axios.get(
-          `${API_URL}/news/search?${params.toString()}`
-        )
-         const endpoint = `${API_URL}/news/search?${params.toString()}`
-         console.log('API Endpoint:', endpoint)
+        const url = `${API_URL}/news/search?${params.toString()}`
+
+        // Log the URL being hit
+        console.log(`Making request to: ${url}`)
+
+        const response = await axios.get(url)
+
+        // Log the response
+        console.log('Response received:', response.data)
+
+        // Set the search results in context state
         setSearchResults(response.data.articles)
-        // Separate logs for different conditions
-        if (!filters.source && !filters.published_at && !filters.author) {
-          console.log(
-            'Search results with keyword only:',
-            response.data.articles
-          )
-        } else {
-          console.log(
-            'Search results with keyword and filters:',
-            response.data.articles
-          )
-        }
       } catch (error) {
+        // Log any errors
         console.error('Error searching for articles:', error.message)
       }
     },
     []
   )
-
 
   // Fetch sources
   const fetchSources = useCallback(async () => {
@@ -175,9 +196,7 @@ export const ArticlesProvider: React.FC<{ children: React.ReactNode }> = ({
   // Fetch categories
   const fetchCategories = useCallback(async () => {
     try {
-      const response = await axios.get(
-        `${API_URL}/news/categories`
-      )
+      const response = await axios.get(`${API_URL}/news/categories`)
       setCategories(response.data.categories)
       return response.data.categories
     } catch (error) {
@@ -192,13 +211,20 @@ export const ArticlesProvider: React.FC<{ children: React.ReactNode }> = ({
         articles,
         filteredArticles,
         searchResults, 
+        singleArticle,
+        personalizedArticles,
         token,
+        authors,
+        sources,
+        categories,
         fetchArticles,
         fetchArticlesByQuery,
+        fetchPersonalizedArticle,
         searchArticles,
         fetchSources,
         fetchAuthors,
         fetchCategories,
+        fetchArticleById,
       }}
     >
       {children}
@@ -206,6 +232,7 @@ export const ArticlesProvider: React.FC<{ children: React.ReactNode }> = ({
   )
 }
 
+// Hook to access the articles context
 export const useArticles = () => {
   const context = useContext(ArticlesContext)
   if (!context) {

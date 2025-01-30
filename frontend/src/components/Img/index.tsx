@@ -8,6 +8,7 @@ const Img: React.FC<ImgProps> = ({
   src,
   alt = '',
   className = '',
+  loading = 'lazy',
   ...restProps
 }) => {
   return (
@@ -15,6 +16,7 @@ const Img: React.FC<ImgProps> = ({
       src={src}
       alt={alt}
       className={`object-cover ${className}`}
+      loading={loading}
       {...restProps}
     />
   )

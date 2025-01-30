@@ -31,7 +31,7 @@ export default function Header({ className }: { className: string }) {
   // Logs out user and redirects to sign-in page
   const handleLogout = () => {
     logout()
-    navigate('/sign-in')
+    navigate('/')
   }
    const [isOpen, setIsOpen] = useState(false)
 

@@ -1,7 +1,7 @@
-import { Link } from "react-router-dom"
-import { Img } from "../Img"
+import { Link } from 'react-router-dom'
+import { Img } from '../Img'
 
-type ArticleCardProp = {
+type ArticleCardProp6 = {
   id: number
   title: string
   description: string
@@ -12,7 +12,7 @@ type ArticleCardProp = {
   published_at: string
 }
 
-const ArticleCard: React.FC<ArticleCardProp> = ({
+const ArticleCard6: React.FC<ArticleCardProp6> = ({
   id,
   title,
   description,
@@ -20,16 +20,17 @@ const ArticleCard: React.FC<ArticleCardProp> = ({
   image_url,
   source,
   author,
-  published_at, 
+  published_at,
 }) => {
-
-
   return (
     <div className='p-2 md:p-4 bg-white h-full shadow-md w-full'>
-      <Link to={`/article/${id}`} className='flex flex-col'>
+      <Link to={`/article/${id}`} className='flex space-x-4'>
         <div className=''>
           <div className='w-full h-full bg-cover bg-center '>
-            <Img src={image_url} className='w-full h-[300px] object-cover object-center' />
+            <Img
+              src={image_url}
+              className='w-full  h-[200px] object-cover object-center'
+            />
           </div>
         </div>
         <div className=''>
@@ -50,7 +51,7 @@ const ArticleCard: React.FC<ArticleCardProp> = ({
             </div>
             <div className='py-2  bg-[#F5F5F5] rounded-md w-full flex items-center justify-between mt-2'>
               <div className='w-full flex space-x-3 items-center'>
-                <div className="w-full flex items-end justify-between">
+                <div className='w-full flex items-end justify-between'>
                   <p className='font-medium text-sm text-[#3E3232]'>{author}</p>
                   <p className='font-normal text-xs text-[#3E3232BF] mt-1'>
                     {published_at}
@@ -65,4 +66,4 @@ const ArticleCard: React.FC<ArticleCardProp> = ({
   )
 }
 
-export default ArticleCard
+export default ArticleCard6
