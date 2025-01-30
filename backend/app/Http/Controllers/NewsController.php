@@ -15,17 +15,6 @@ class NewsController extends Controller
      */
     public function index(Request $request)
     {
-        // Validate incoming request
-        $request->validate([
-            'keyword'  => 'nullable|string',
-            'category' => 'nullable|string',
-            'source'   => 'nullable|string',
-            'date'     => 'nullable|date',
-            'author'   => 'nullable|string',
-            'id'   => 'nullable|integer',
-            'per_page' => 'nullable|integer|min:1|max:100',
-        ]);
-
         $articles = NewsArticle::query()
             ->when($request->keyword, function ($query, $keyword) {
                 $query->where('title', 'like', "%$keyword%")
@@ -37,36 +26,16 @@ class NewsController extends Controller
             ->when($request->source, function ($query, $source) {
                 $query->where('source', $source);
             })
-            ->when($request->id, function ($query, $id) {
-                $query->where('id', $id);
-            })
             ->when($request->date, function ($query, $date) {
                 $query->whereDate('published_at', $date);
             })
             ->when($request->author, function ($query, $author) {
                 $query->where('author', $author);
             })
-            ->paginate($request->get('per_page', 100));
+            ->paginate();
 
-        return new NewsArticleCollection($articles->appends($request->query()));
+        return new NewsArticleCollection($articles);
     }
-
-    /**
-     * Fetch a specific article by ID.
-     */
-    public function show($id): \Illuminate\Http\JsonResponse
-    {
-        $article = NewsArticle::find($id);
-
-        if (!$article) {
-            return response()->json([
-                'error' => 'Article not found',
-            ], 404);
-        }
-
-        return response()->json(new NewsArticleResource($article));
-    }
-
 
         /**
      * Search articles by keyword.
@@ -74,7 +43,7 @@ class NewsController extends Controller
     /**
  * Search articles by keyword and optionally filter further by source, published_at, and author.
  */
-public function search(Request $request): \Illuminate\Http\JsonResponse
+    public function search(Request $request): \Illuminate\Http\JsonResponse
 {
     // Validate the request
     $request->validate([
@@ -121,7 +90,7 @@ public function search(Request $request): \Illuminate\Http\JsonResponse
     /**
      * Fetch personalized news based on user preferences.
      */
-    public function personalisedNews(Request $request)
+   public function personalisedNews(Request $request)
     {
         $user = $request->user();
         $preferences = $user->preferences;
@@ -133,7 +102,7 @@ public function search(Request $request): \Illuminate\Http\JsonResponse
             ->when($preferences->preferred_categories, function ($query, $categories) {
                 $query->whereIn('category', $categories);
             })
-            ->paginate(100);
+            ->paginate(10);
 
         return new NewsArticleCollection($articles);
     }
@@ -141,55 +110,60 @@ public function search(Request $request): \Illuminate\Http\JsonResponse
     /**
      * Fetch all unique categories.
      */
-    public function categories(): \Illuminate\Http\JsonResponse
+     public function categories(): \Illuminate\Http\JsonResponse
     {
-        $categories = Cache::remember('news_categories', 60, function () {
-            return NewsArticle::query()
-                ->select('category')
-                ->distinct()
-                ->orderBy('category')
-                ->pluck('category');
-        });
+        $categories = NewsArticle::query()
+            ->select('category')
+            ->distinct()
+            ->orderBy('category')
+            ->pluck('category');
 
         return response()->json([
             'categories' => $categories,
         ]);
     }
 
-    /**
-     * Fetch all unique authors.
-     */
     public function authors(): \Illuminate\Http\JsonResponse
     {
-        $authors = Cache::remember('news_authors', 60, function () {
-            return NewsArticle::query()
-                ->whereNotNull('author')
-                ->select('author')
-                ->distinct()
-                ->orderBy('author')
-                ->pluck('author');
-        });
+        $authors = NewsArticle::query()
+            ->whereNotNull('author')
+            ->select('author')
+            ->distinct()
+            ->orderBy('author')
+            ->pluck('author');
 
         return response()->json([
             'authors' => $authors,
         ]);
     }
 
-    /**
-     * Fetch all unique sources.
-     */
-    public function sources(): \Illuminate\Http\JsonResponse
+    public function sources(Request $request): \Illuminate\Http\JsonResponse
     {
-        $sources = Cache::remember('news_sources', 60, function () {
-            return NewsArticle::query()
-                ->select('source')
-                ->distinct()
-                ->orderBy('source')
-                ->pluck('source');
-        });
+        $sources = NewsArticle::query()
+            ->select('source')
+            ->distinct()
+            ->orderBy('source')
+            ->pluck('source');
 
         return response()->json([
             'sources' => $sources,
         ]);
+    }
+
+    
+    /**
+     * Fetch a specific article by ID.
+     */
+    public function show($id): \Illuminate\Http\JsonResponse
+    {
+        $article = NewsArticle::find($id);
+
+        if (!$article) {
+            return response()->json([
+                'error' => 'Article not found',
+            ], 404);
+        }
+
+        return response()->json(new NewsArticleResource($article));
     }
 }

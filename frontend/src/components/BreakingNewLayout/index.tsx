@@ -2,6 +2,7 @@ import ArticleCard from '../ArticleCard'
 import NewsSectionTitle from '../NewsSectionTitle'
 import { useArticles } from '../../context/ArticlesContext'
 import { truncateText } from '../../utilis/minimizeText'
+import { formatDateString } from '../../utilis/formatDate'
 
 
 export default function BreakingNewsSection() {
@@ -15,14 +16,14 @@ export default function BreakingNewsSection() {
           {articles.slice(20, 22).map((article) => (
             <ArticleCard
               key={article.id}
-              id={article.id.toString()}
+              id={article.id}
               title={article.title}
-              description={truncateText(article.title, 200)}
+              description={truncateText(article.title, 150)}
               category={article.category}
               image_url={article.image_url}
               source={article.source}
               author={article.author}
-              published_at={article.published_at}
+              published_at={formatDateString(article.published_at)}
             />
           ))}
         </div>
@@ -30,14 +31,14 @@ export default function BreakingNewsSection() {
           {articles.slice(4, 8).map((article) => (
             <ArticleCard
               key={article.id}
-              id={article.id.toString()}
+              id={article.id}
               title={article.title}
-              description={article.description}
+              description={truncateText(article.description, 200)}
               category={article.category}
               image_url={article.image_url}
               source={article.source}
               author={article.author}
-              published_at={article.published_at}
+              published_at={formatDateString(article.published_at)}
             />
           ))}
         </div>

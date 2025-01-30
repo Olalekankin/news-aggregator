@@ -5,6 +5,7 @@ import React, {
   ReactNode,
   useEffect,
 } from 'react'
+import { Navigate } from 'react-router-dom'
 
 // Type definition for user data
 interface User {
@@ -55,18 +56,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setIsAuthenticated(false)
       setUser(null)
       setToken(null)
-      localStorage.removeItem('user') // Remove user data from localStorage
-      localStorage.removeItem('token') // Remove token from localStorage
+      localStorage.removeItem('user') 
+      localStorage.removeItem('token') 
     } catch (error) {
       console.error('Logout failed:', error)
     }
   }
 
-  // Load user data and token from localStorage on initial render
+  
   useEffect(() => {
     try {
-      const storedUser = localStorage.getItem('user') // Retrieve user data from localStorage
-      const storedToken = localStorage.getItem('token') // Retrieve token from localStorage
+      const storedUser = localStorage.getItem('user') 
+      const storedToken = localStorage.getItem('token') 
       if (storedUser && storedToken) {
         setUser(JSON.parse(storedUser)) // Parse and set user data
         setToken(storedToken) // Set token

@@ -13,7 +13,8 @@ Route::post('/login', [UserController::class, 'login']);
 
 //route to display articles
 Route::get('/articles', [NewsController::class, 'index']);
-Route::get('/articles/{id}', [NewsController::class, 'show'])->where('id', '[1-500]+');
+
+
 
 
 //Return a list of sources, categories and authors
@@ -38,3 +39,4 @@ Route::middleware(['auth:sanctum'])->group(function () {
     });
 });
 
+Route::get('/articles/{id}', [NewsController::class, 'show'])->whereNumber('id');

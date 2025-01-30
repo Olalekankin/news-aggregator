@@ -1,7 +1,6 @@
 import React from 'react'
 import ProfileCard from './ProfileCard'
 import { Helmet } from 'react-helmet'
-import { useAuth } from '../../context/AuthContext'
 const ProfileIndex: React.FC = () => {
   
   return (

@@ -2,6 +2,7 @@ import NewsSectionTitle from '../NewsSectionTitle'
 import ArticleCard2 from '../ArticleCard2'
 import { useArticles } from '../../context/ArticlesContext'
 import { truncateText } from '../../utilis/minimizeText'
+import { formatDateString } from '../../utilis/formatDate'
 
 
 export default function PopularNewsSection() {
@@ -14,12 +15,12 @@ export default function PopularNewsSection() {
         {articles.slice(0, 4).map((article) => (
           <ArticleCard2
             key={article.id}
-            id={article.id.toString()}
+            id={article.id}
             title={article.title}
-            description={truncateText(article.title, 250)}
+            description={truncateText(article.description, 25)}
             image_url={article.image_url}
             category={article.category}
-            published_at={article.published_at}
+            published_at={formatDateString(article.published_at)}
           />
         ))}
       </div>

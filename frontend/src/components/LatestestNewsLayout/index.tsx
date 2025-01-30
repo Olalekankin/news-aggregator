@@ -1,4 +1,6 @@
 import { useArticles } from '../../context/ArticlesContext'
+import { formatDateString } from '../../utilis/formatDate'
+import { truncateText } from '../../utilis/minimizeText'
 import ArticleCard from '../ArticleCard'
 import NewsSectionTitle from '../NewsSectionTitle'
 
@@ -13,14 +15,14 @@ export default function LatestNews() {
           {articles.slice(5, 10).map((article) => (
             <ArticleCard
               key={article.id}
-              id={article.id.toString()}
+              id={article.id}
               title={article.title}
-              description={article.description}
+              description={truncateText(article.description, 150)}
               category={article.category}
               image_url={article.image_url}
               source={article.source}
               author={article.author}
-              published_at={article.published_at}
+              published_at={formatDateString(article.published_at)}
             />
           ))}
         </div>
