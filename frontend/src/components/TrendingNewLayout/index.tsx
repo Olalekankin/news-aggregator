@@ -11,7 +11,7 @@ export default function TrendingSection() {
     <div className='w-full bg-white lg:py-8 py-4 px-4'>
       <NewsSectionTitle title='Trending News' />
       <div className='w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-5'>
-        {articles.slice(5, 25).map((article) => (
+        {articles.slice(5, 26).map((article) => (
           <ArticleCard6
             key={article.id}
             id={article.id}

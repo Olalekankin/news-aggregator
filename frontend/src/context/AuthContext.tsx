@@ -5,13 +5,22 @@ import React, {
   ReactNode,
   useEffect,
 } from 'react'
-import { Navigate } from 'react-router-dom'
 
 // Type definition for user data
+export interface UserPreferences {
+  id: number
+  user_id: number
+  preferred_sources: string[]
+  preferred_categories: string[]
+  preferred_authors: string[]
+  created_at: string
+  updated_at: string
+}
 interface User {
   id: number
   name: string
   email: string
+  preferences?: UserPreferences
 }
 
 // Type definition for the context value

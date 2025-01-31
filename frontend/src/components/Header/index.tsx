@@ -154,10 +154,10 @@ export default function Header({ className }: { className: string }) {
                     </li>
                     <li>
                       <Link
-                        to='/settings'
+                        to='/register'
                         className='block w-full text-left px-2 py-1 hover:bg-gray-100 rounded'
                       >
-                        Settings
+                        Register
                       </Link>
                     </li>
                     <li>

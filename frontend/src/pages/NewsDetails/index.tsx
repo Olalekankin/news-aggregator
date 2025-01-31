@@ -39,11 +39,6 @@ const NewsDetails = () => {
     }
   }, [id, fetchArticleById])
 
-  // Fetch all articles once when component mounts
-  useEffect(() => {
-    fetchArticles()
-    console.log(articles)
-  }, [fetchArticles])
 
   return (
     <>
@@ -121,7 +116,7 @@ const NewsDetails = () => {
             {/* Latest News Section */}
             <div className='bg-rose-50 py-5 min-h-[850px]'>
               <NewsSectionTitle title='Latest news' />
-              <OtherNews />
+              <OtherNews/>
             </div>
           </div>
         </div>

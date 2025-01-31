@@ -50,9 +50,9 @@ const PreferenceForm = ({ articles }: PrefProps) => {
       if (article.source) sourceSet.add(article.source)
     })
 
-    setCategories(limitArraySize([...categorySet], 6)) 
-    setAuthors(limitArraySize([...authorSet], 6))
-    setSources(limitArraySize([...sourceSet], 6))
+    setCategories(limitArraySize([...categorySet], 10)) 
+    setAuthors(limitArraySize([...authorSet], 10))
+    setSources(limitArraySize([...sourceSet], 10))
   }
 
   // Toggle selection functions

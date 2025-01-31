@@ -43,3 +43,4 @@ class NewsAIApiService
     }
 }
 
+// Get News from NewsAPI.ai
