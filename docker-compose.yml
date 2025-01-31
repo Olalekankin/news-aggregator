@@ -1,45 +1,37 @@
 version: '3.8'
 
 services:
-  backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    ports:
-      - "8000:8000"
-    volumes:
-      - ./backend:/var/www/html
-    environment:
-      - DB_HOST=db
-      - DB_PORT=3306
-      - DB_DATABASE=news_aggregator
-      - DB_USERNAME=root
-      - DB_PASSWORD=root
-    depends_on:
-      - db
-
+  # Frontend (React/Vite)
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
     ports:
-      - "3000:3000"
+      - "8080:80"  # Exposing the frontend on port 8080
     volumes:
       - ./frontend:/app
-    stdin_open: true
-    tty: true
-
-  db:
-    image: mysql:8
+    depends_on:
+      - backend  # Ensure backend is ready before frontend starts
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: news_aggregator
-      MYSQL_USER: root
-      MYSQL_PASSWORD: root
-    ports:
-      - "3306:3306"
-    volumes:
-      - db-data:/var/lib/mysql
+      VITE_BACKEND_URL: "http://backend:8000"  # Assuming backend runs on port 8000 in the container
 
-volumes:
-  db-data:
+  # Backend (Laravel)
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"  # Exposing the backend on port 8000
+    volumes:
+      - ./backend:/var/www/html
+    environment:
+      APP_ENV: production
+      APP_URL: http://backend:8000  # Backend URL
+      DB_CONNECTION: sqlite
+      DB_DATABASE: /var/www/html/database/database.sqlite  # SQLite path inside container
+    networks:
+      - backend_network
+
+networks:
+  backend_network:
+    driver: bridge
