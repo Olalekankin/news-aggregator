@@ -55,10 +55,6 @@ const SearchResult: React.FC = () => {
             key={article.id}
             id={article.id.toString()}
             title={article.title}
-            description={
-              article.description?.split(' ').slice(0, 80).join(' ') +
-              (article.description.split(' ').length > 80 ? '...' : '')
-            }
             category={article.category}
             image_url={article.image_url}
             source={article.source}

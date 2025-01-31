@@ -28,7 +28,7 @@ const Home: React.FC = () => {
   const scrollContainerRef = useRef<HTMLDivElement | null>(null)
   const [currentIndex, setCurrentIndex] = useState(0)
 
-  const scrollBy = 300 // Adjust scroll amount
+  const scrollBy = 330 
 
   const scrollLeft = () => {
     if (scrollContainerRef.current) {
@@ -59,7 +59,7 @@ const Home: React.FC = () => {
 
     const interval = setInterval(() => {
       scrollRight()
-    }, 1 * 60 * 1000)
+    }, 0.5 * 60 * 1000)
 
     return () => clearInterval(interval)
   }, [personalizedArticles])

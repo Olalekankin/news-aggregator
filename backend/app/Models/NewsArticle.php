@@ -15,8 +15,7 @@ class NewsArticle extends Model
 
     public static function categories(): array
     {
-        return ['technology'];
-//        return ['technology', 'business', 'sports', 'health', 'politics'];
+       return ['business', 'politics', 'sports', 'health', 'technology', 'insider', 'movie', 'theater', 'world', 'art', 'music',];
     }
 }
 
